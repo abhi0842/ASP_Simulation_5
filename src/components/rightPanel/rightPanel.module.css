@@ -1,0 +1,350 @@
+.rightPanelContainer {
+    width: 33.33%;
+    height: 100%;
+    background-color: #FCFCF9;
+    gap: 100px;
+}
+
+.right {
+    width: 100%;
+    padding: 20px;
+    background: #FCFCF9;
+    color: #000000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.right h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: rgb(29 116 128);
+}
+
+.box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid #dadada;
+    box-shadow: 0px 2px 8px rgba(94, 94, 94, 0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.box h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -5px;
+    color: rgb(29 116 128);
+}
+
+label {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #000000;
+}
+
+.freqText {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #000000;
+}
+
+
+
+/* Checkboxes */
+
+input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: rgb(206, 206, 206);
+}
+
+
+/* Dropdowns & Inputs */
+
+select {
+    background: #FCFCF9;
+    border: 1px solid #c9c9ca;
+    color: #000000;
+    padding: 5px 10px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+option:focus {
+    background-color: #1D7480;
+}
+
+input[type="number"] {
+    background: #FCFCF9;
+    border: 1px solid #c9c9ca;
+    color: #000000;
+    padding: 5px 10px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+select:hover,
+input[type="number"]:hover {
+    border-color: #3e4652;
+}
+
+select:focus,
+input[type="number"]:focus {
+    border-color: rgb(29 116 128);
+}
+
+
+/* Buttons */
+
+.box button {
+    margin-top: 10px;
+    width: fit-content;
+    background: rgb(29 116 128);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rangeValue {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #000000;
+}
+.syncInputContainer {
+    display: flex;
+    align-items: start;
+    flex-direction: row;
+    gap: 5px;
+}
+.syncInputContainer input[type="number"] {
+    width: 70px;
+    height: auto;
+}
+.box button:hover {
+    background: #268eb4;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+}
+.psdContainer {
+    display: flex;
+    justify-content: space-between; 
+    gap: 10px;
+}
+
+/* Kalman filter controls */
+.kalmanHint {
+    font-size: 0.82rem;
+    color: #444;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.sliderBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.sliderHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.valueBadge {
+    font-size: 0.72rem;
+    background: #eeece8;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.colorDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.rangeSlider {
+    width: 100%;
+    accent-color: rgb(29 116 128);
+}
+
+.sliderSubtext {
+    font-size: 0.78rem;
+    color: #555;
+}
+
+.scenarioTitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 8px 0 0;
+    color: rgb(29 116 128);
+}
+
+.scenarioGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.scenarioGrid button {
+    margin-top: 0;
+    width: 100%;
+    font-size: 0.72rem;
+    padding: 8px 6px;
+    background: #f5f5f2;
+    color: #1a1a1a;
+    border: 1px solid #ccc;
+}
+
+.scenarioGrid button:hover {
+    background: #e8f4f6;
+    border-color: rgb(29 116 128);
+}
+
+.scenarioNote {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 8px 0 0;
+    border-left: 4px solid;
+    background: #f8f8f6;
+}
+
+.scenario_green {
+  border-color: #639922;
+  background: #f0f7e8;
+}
+.scenario_red {
+  border-color: #e24b4a;
+  background: #ffe8e8;
+}
+.scenario_yellow {
+  border-color: #ba7517;
+  background: #fff5e8;
+}
+.scenario_blue {
+  border-color: #378add;
+  background: #e8f4ff;
+}
+
+.clinicalRoot {
+    border: 1px solid #dadada;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(94, 94, 94, 0.22);
+    overflow: hidden;
+}
+
+.clinicalToggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border: none;
+    background: #f0faf6;
+    color: rgb(29 116 128);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0;
+}
+
+.clinicalCards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px 14px;
+}
+
+.clinicalCard {
+    background: #fafaf8;
+    border: 1px solid #e8e8e4;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.clinicalCard h4 {
+    margin: 0 0 4px;
+    font-size: 0.92rem;
+    color: rgb(29 116 128);
+}
+
+.clinicalSubtitle {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0 0 8px;
+    font-style: italic;
+}
+
+.clinicalText {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.clinicalRec {
+    font-family: "Consolas", monospace;
+    font-size: 0.82rem;
+    background: #eef6fc;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 3px solid rgb(29 116 128);
+}
+
+.clinicalApply {
+    margin-top: 0 !important;
+    width: fit-content;
+    background: rgb(29 116 128);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.clinicalApply:hover {
+    background: #268eb4;
+}
+
+@media (max-width: 768px) {
+    .rightPanelContainer {
+        width: 100%;
+        height: 100%;
+    }
+}
