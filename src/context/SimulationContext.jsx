@@ -4,33 +4,120 @@ import { createContext, useCallback, useEffect, useRef, useState } from "react";
 export const SimulationContext = createContext();
 
 export const SimulationProvider = ({ children }) => {
+  // ========== Module Navigation & Workflow ==========
+  const [currentModule, setCurrentModule] = useState(1); // 1-8
+  const [pipelineData, setPipelineData] = useState({
+    module1: { ecg: [], metadata: {} },
+    module2: { noisyEcg: [], noiseConfig: {} },
+    module3: { matrices: { A: null, H: null, Q: null, R: 0.01 }, unforcedMode: true },
+    module4: { kalmanResults: null, noiselessMode: true },
+    module5: { initialConditions: { x0hat: 0, P0: [[1, 0], [0, 1]] } },
+    module6: { stabilityAnalysis: null },
+    module7: { comparativeAnalysis: null },
+    module8: { metrics: {}, report: '' },
+  });
+
+  // ========== Module 1: ECG Signal Lab ==========
+  const [ecgDatasets, setEcgDatasets] = useState([]);
+  const [selectedEcgPreset, setSelectedEcgPreset] = useState('ecg200');
+  const [ecgMetadata, setEcgMetadata] = useState({
+    rPeaks: [],
+    heartRate: 0,
+    beatSegments: [],
+    signalQuality: {},
+  });
+
+  // ========== Module 2: Biomedical Noise Lab ==========
+  const [noiseConfig, setNoiseConfig] = useState({
+    gaussian: { enabled: true, amplitude: 0.01 },
+    baseline: { enabled: false, amplitude: 0.2 },
+    powerline: { enabled: false, amplitude: 0.05 },
+    emg: { enabled: false, amplitude: 0.02 },
+    motion: { enabled: false, amplitude: 0.1 },
+  });
+  const [noisyEcg, setNoisyEcg] = useState([]);
+  const [snrMetrics, setSNRMetrics] = useState({ before: 0, after: 0 });
+
+  // ========== Module 3: State-Space Discovery Engine ==========
+  const [stateSpaceMatrices, setStateSpaceMatrices] = useState({
+    A: [[1.0, 0.002], [0, 0.99]],
+    H: [[1, 0]],
+    Q: [[0.001, 0], [0, 0.0001]],
+    R: 0.01,
+  });
+  const [unforcedMode, setUnforcedMode] = useState(true);
+  const [noiselessMode, setNoiselessMode] = useState(false);
+  const [systemAnalysis, setSystemAnalysis] = useState({
+    eigenvalues: null,
+    stability: null,
+    observable: true,
+  });
+
+  // ========== Module 4: Kalman Filter Immersion Engine ==========
+  const [kalmanFilterState, setKalmanFilterState] = useState({
+    xFiltered: [],
+    xPredicted: [],
+    P_trace: [],
+    P_predicted_trace: [],
+    K_trace: [],
+    innovations: [],
+    converged: false,
+  });
+  const [filterStep, setFilterStep] = useState(0);
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  // ========== Module 5: Initial Condition Dynamics Lab ==========
+  const [initialConditions, setInitialConditions] = useState({
+    x0hat: 0,
+    P0_diag: 1.0,
+  });
+  const [comparisonRun, setComparisonRun] = useState(null);
+  const [convergenceAnalysis, setConvergenceAnalysis] = useState(null);
+
+  // ========== Module 6: Dynamic Stability & Prediction Lab ==========
+  const [stabilityVisualization, setStabilityVisualization] = useState({
+    eigenvalues: null,
+    phasePortrait: [],
+    predictionHorizon: 0,
+  });
+
+  // ========== Module 7: AI-Assisted Educational Interpretation ==========
+  const [educationalInterpretation, setEducationalInterpretation] = useState({
+    suggestions: [],
+    explanations: {},
+  });
+
+  // ========== Module 8: Performance Analytics ==========
+  const [performanceMetrics, setPerformanceMetrics] = useState({
+    rmse: 0,
+    mae: 0,
+    snrImprovement: 0,
+    convergenceTime: 0,
+  });
+  const [scientificReport, setScientificReport] = useState('');
+
+  // ========== Legacy state (kept for backward compatibility) ==========
   const [time, setTime] = useState(5);
   const [originalFs, setOriginalFs] = useState(500);
-
   const [rawSamples, setRawSamples] = useState([]);
   const [noisySamples, setNoisySamples] = useState([]);
   const [cleanSignal, setCleanSignal] = useState([]);
-
   const [generateECG, setGenerateECG] = useState(false);
   const [applyNoiseTrigger, setApplyNoiseTrigger] = useState(false);
   const [applypsdTrigger, setApplypsdTrigger] = useState(false);
-
   const [noise, setNoise] = useState({
     baseline: false,
     powerline: false,
     emg: false,
   });
-
   const [csvFilePath, setCsvFilePath] = useState(() => {
     const base = import.meta.env.BASE_URL || "/";
     const normalizedBase = base.endsWith("/") ? base : base + "/";
     return normalizedBase + "ecg200.csv";
   });
   const prevPathRef = useRef(csvFilePath);
-
   const [showInstruction, setShowInstruction] = useState(false);
   const buttonRef = useRef(null);
-
   const [kalmanParams, setKalmanParams] = useState({
     x0hat: 0,
     P0_alpha: 1,
@@ -121,9 +208,102 @@ export const SimulationProvider = ({ children }) => {
     setKalmanParams((p) => ({ ...p, fsKalman: originalFs }));
   }, [originalFs]);
 
+  // ========== Pipeline helper functions ==========
+  const advanceToNextModule = useCallback(() => {
+    if (currentModule < 8) {
+      setCurrentModule(currentModule + 1);
+    }
+  }, [currentModule]);
+
+  const goToModule = useCallback((moduleNumber) => {
+    if (moduleNumber >= 1 && moduleNumber <= 8) {
+      setCurrentModule(moduleNumber);
+    }
+  }, []);
+
+  const resetPipeline = useCallback(() => {
+    setCurrentModule(1);
+    setPipelineData({
+      module1: { ecg: [], metadata: {} },
+      module2: { noisyEcg: [], noiseConfig: {} },
+      module3: { matrices: { A: null, H: null, Q: null, R: 0.01 }, unforcedMode: true },
+      module4: { kalmanResults: null, noiselessMode: true },
+      module5: { initialConditions: { x0hat: 0, P0: [[1, 0], [0, 1]] } },
+      module6: { stabilityAnalysis: null },
+      module7: { comparativeAnalysis: null },
+      module8: { metrics: {}, report: '' },
+    });
+  }, []);
+
   return (
     <SimulationContext.Provider
       value={{
+        // ========== Module Navigation ==========
+        currentModule,
+        setCurrentModule,
+        advanceToNextModule,
+        goToModule,
+        resetPipeline,
+        pipelineData,
+        setPipelineData,
+
+        // ========== Module 1: ECG Signal Lab ==========
+        ecgDatasets,
+        setEcgDatasets,
+        selectedEcgPreset,
+        setSelectedEcgPreset,
+        ecgMetadata,
+        setEcgMetadata,
+
+        // ========== Module 2: Biomedical Noise Lab ==========
+        noiseConfig,
+        setNoiseConfig,
+        noisyEcg,
+        setNoisyEcg,
+        snrMetrics,
+        setSNRMetrics,
+
+        // ========== Module 3: State-Space Discovery Engine ==========
+        stateSpaceMatrices,
+        setStateSpaceMatrices,
+        unforcedMode,
+        setUnforcedMode,
+        noiselessMode,
+        setNoiselessMode,
+        systemAnalysis,
+        setSystemAnalysis,
+
+        // ========== Module 4: Kalman Filter Immersion Engine ==========
+        kalmanFilterState,
+        setKalmanFilterState,
+        filterStep,
+        setFilterStep,
+        isFiltering,
+        setIsFiltering,
+
+        // ========== Module 5: Initial Condition Dynamics Lab ==========
+        initialConditions,
+        setInitialConditions,
+        comparisonRun,
+        setComparisonRun,
+        convergenceAnalysis,
+        setConvergenceAnalysis,
+
+        // ========== Module 6: Dynamic Stability & Prediction Lab ==========
+        stabilityVisualization,
+        setStabilityVisualization,
+
+        // ========== Module 7: AI-Assisted Educational Interpretation ==========
+        educationalInterpretation,
+        setEducationalInterpretation,
+
+        // ========== Module 8: Performance Analytics ==========
+        performanceMetrics,
+        setPerformanceMetrics,
+        scientificReport,
+        setScientificReport,
+
+        // ========== Legacy state (backward compatibility) ==========
         time,
         setTime,
         originalFs,

@@ -1,11 +1,12 @@
 import "./App.css";
-import {Home} from "./pages/home/Home";
+import { SimulationProvider } from "./context/SimulationContext";
+import { Home } from "./pages/home/Home";
 
 function App() {
   return (
-    <>
+    <SimulationProvider>
       <Home />
-    </>
+    </SimulationProvider>
   );
 }
 
