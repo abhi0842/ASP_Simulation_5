@@ -3,7 +3,6 @@ import { SimulationContext } from "../../context/SimulationContext";
 import styles from "./rightPanel.module.css";
 import Swal from "sweetalert2";
 import { KalmanControls } from "./KalmanControls.jsx";
-import { ClinicalContextPanel } from "./ClinicalContextPanel.jsx";
 
 export const RightPanel = () => {
   const {
@@ -69,11 +68,7 @@ export const RightPanel = () => {
   return (
     <div className={styles.rightPanelContainer}>
       <div className={styles.right}>
-        <h2 className={styles.rightPanelTitle}>Input Panel — Simulation Controls</h2>
-        <p className={styles.inputPanelIntro}>
-          Topic: Kalman filter with an <strong>unforced</strong> dynamic model and{" "}
-          <strong>noiseless</strong> state-space (Q = 0). Set x̂₀ and P₀ here; graphs update on the right.
-        </p>
+        <h2 className={styles.rightPanelTitle}>Simulation Controls</h2>
 
         {/* ── STEP 1: Load the ECG signal ── */}
         <div className={styles.box}>
@@ -177,8 +172,6 @@ export const RightPanel = () => {
 
         {/* ── STEPS 2–5: Kalman filter controls ── */}
         <KalmanControls />
-
-        {generateECG && <ClinicalContextPanel />}
 
         {/* ── PSD (not used in Topic 2B) ── */}
         {!noiselessMode && (

@@ -60,9 +60,9 @@ export function KalmanPlaybackBar() {
   return (
     <section className={styles.playbackBar} aria-label="Kalman filter slow-motion playback">
       <div className={styles.playbackHeader}>
-        <h3 className={styles.playbackTitle}>Slow-Motion Filter Walkthrough</h3>
-        <p className={styles.playbackSub}>
-          Watch each sample: predict with the unforced model, then correct with the measurement.
+        <h3 className={styles.playbackTitle}>Playback</h3>
+        <p className={styles.playbackStepLabel}>
+          Sample {idx + 1}/{n} · t={t.toFixed(3)}s · z={fmt4(z)} · x̂⁻={fmt4(xPred)} · x̂={fmt4(xUpd)} · K={fmt4(K)} · P={fmt4(P)}
         </p>
       </div>
 
@@ -105,40 +105,23 @@ export function KalmanPlaybackBar() {
         </label>
       </div>
 
+      <input
+        className={styles.playbackSeek}
+        type="range"
+        min={0}
+        max={Math.max(0, n - 1)}
+        value={idx}
+        onChange={(e) => {
+          setPlaybackPlaying(false);
+          setPlaybackIndex(Number(e.target.value));
+        }}
+      />
+
       <div className={styles.playbackProgress}>
         <div
           className={styles.playbackProgressFill}
           style={{ width: `${((idx + 1) / n) * 100}%` }}
         />
-      </div>
-      <p className={styles.playbackStepLabel}>
-        Sample {idx + 1} / {n} · t = {t.toFixed(3)} s
-      </p>
-
-      <div className={styles.playbackStepCards}>
-        <div className={styles.playbackStepCard}>
-          <span className={styles.playbackStepNum}>1</span>
-          <div>
-            <strong>Predict (unforced)</strong>
-            <p>x̂⁻ = A x̂ · value = {fmt4(xPred)} mV</p>
-          </div>
-        </div>
-        <div className={styles.playbackStepCard}>
-          <span className={styles.playbackStepNum}>2</span>
-          <div>
-            <strong>Measure</strong>
-            <p>z = {fmt4(z)} mV</p>
-          </div>
-        </div>
-        <div className={styles.playbackStepCard}>
-          <span className={styles.playbackStepNum}>3</span>
-          <div>
-            <strong>Update</strong>
-            <p>
-              K = {fmt4(K)} · P = {fmt4(P)} · x̂ = {fmt4(xUpd)} mV
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );

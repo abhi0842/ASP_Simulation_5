@@ -6,34 +6,8 @@
     overflow-y: auto;
 }
 
-h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: rgb(0, 0, 0);
-}
-
 .container {
-    padding: 12px 16px 24px;
-}
-
-.outputHeader {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e8e8e4;
-}
-
-.outputTitle {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1a5376;
-    margin: 0 0 4px;
-}
-
-.outputSub {
-    font-size: 0.85rem;
-    color: #555;
-    margin: 0;
+    padding: 10px 12px 14px;
 }
 
 .ecgChartsBlock {
@@ -60,7 +34,6 @@ h3 {
     }
     .psdContainer {
         flex-direction: column;
-        gap:-10px;
-        
+        gap: 0;
     }
 }

@@ -1,51 +1,8 @@
 .kalmanTabsRoot {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 6px;
   padding-top: 0;
-  border-top: 2px solid #e8e8e4;
-}
-
-/* ── Topic context banner ── */
-.topicBanner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px 14px;
-  background: linear-gradient(90deg, #1a5376 0%, #1d7480 100%);
-  color: white;
-  font-size: 0.82rem;
-  border-radius: 4px 4px 0 0;
-  margin-bottom: 0;
-}
-
-.topicBannerLeft {
-  font-size: 0.82rem;
-  letter-spacing: 0.2px;
-}
-
-.topicBannerBadges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.topicBadgeOn {
-  background: #d4f0e4;
-  color: #1d6e4f;
-  font-weight: 700;
-  font-size: 0.73rem;
-  border-radius: 10px;
-  padding: 2px 8px;
-}
-
-.topicBadgeOff {
-  background: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.65);
-  font-size: 0.73rem;
-  border-radius: 10px;
-  padding: 2px 8px;
+  border-top: 1px solid #e8e8e4;
 }
 
 /* ── Tab step badge (small number inside tab button) ── */
@@ -66,27 +23,6 @@
 .tabBtnActive .tabStepBadge {
   background: rgba(255,255,255,0.3);
   color: #1d9e75;
-}
-
-/* ── Tab hint bar ── */
-.tabHintBar {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px 12px;
-  background: #f4f8ff;
-  border: 1px solid #c7d9f5;
-  border-radius: 0 0 6px 6px;
-  font-size: 0.8rem;
-  color: #1a3a5c;
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-.tabHintIcon {
-  flex-shrink: 0;
-  font-size: 0.9rem;
-  margin-top: 1px;
 }
 
 .tabBar {
@@ -262,19 +198,19 @@
 }
 
 .chartBox {
-  height: 280px;
+  height: 340px;
   position: relative;
 }
 
 .chartBoxSmall {
-  height: 200px;
+  height: 230px;
   position: relative;
 }
 
 .metricsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 @media (max-width: 768px) {
@@ -284,20 +220,21 @@
 }
 
 .metricCard {
-  background: #f0f0ec;
-  border-radius: 10px;
-  padding: 10px 12px;
+  background: #f6f7f6;
+  border-radius: 8px;
+  padding: 8px 10px;
   text-align: center;
+  border: 1px solid #e4e4e0;
 }
 
 .metricLabel {
-  font-size: 14px;
+  font-size: 12px;
   color: #555;
   margin: 0 0 4px;
 }
 
 .metricValue {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
 }
@@ -516,9 +453,9 @@
 }
 
 .panelTitle {
-  font-size: 1.1rem;
+  font-size: 0.98rem;
   font-weight: 600;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   color: #1a5376;
 }
 
@@ -685,12 +622,12 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
-  padding: 8px 12px;
+  margin-bottom: 8px;
+  padding: 6px 8px;
   border-radius: 6px;
   background: #f4f8ff;
   border: 1px solid #c7d9f5;
-  font-size: 0.82rem;
+  font-size: 0.74rem;
 }
 
 .modeOn {
@@ -710,197 +647,31 @@
 
 .modeHint {
   color: #1d6e4f;
-  font-style: italic;
-  font-size: 0.79rem;
-}
-
-/* ── Topic concept diagram (output panel) ── */
-.conceptRoot {
-  margin-bottom: 16px;
-  padding: 16px;
-  background: linear-gradient(180deg, #f8fbfd 0%, #fff 100%);
-  border: 1px solid #d4e4ec;
-  border-radius: 10px;
-}
-
-.conceptMainTitle {
-  font-size: 1.05rem;
-  color: #1a5376;
-  margin: 0 0 8px;
-}
-
-.conceptLead {
-  font-size: 0.88rem;
-  color: #444;
-  margin: 0 0 14px;
-  line-height: 1.45;
-}
-
-.conceptGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.conceptCard {
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #e0e8ec;
-  border-radius: 8px;
-  font-size: 0.82rem;
-}
-
-.conceptCard h3 {
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-  color: #1d7480;
-}
-
-.conceptCardHighlight {
-  border-color: #7F77DD;
-  background: #faf9ff;
-}
-
-.conceptEquation {
-  font-family: "Cambria Math", Georgia, serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1a5376;
-  margin-bottom: 8px;
-}
-
-.conceptList {
-  margin: 8px 0;
-  padding-left: 18px;
-}
-
-.conceptYes {
-  margin: 8px 0 0;
-  color: #1d6e4f;
-  font-size: 0.8rem;
-}
-
-.conceptBadgeOn,
-.conceptBadgeOff {
-  display: inline-block;
-  margin-top: 8px;
   font-size: 0.72rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
-}
-
-.conceptBadgeOn {
-  background: #d4f0e4;
-  color: #1d6e4f;
-}
-
-.conceptBadgeOff {
-  background: #eee;
-  color: #888;
-}
-
-.conceptFlow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding: 10px;
-  background: #eef6f8;
-  border-radius: 8px;
-  font-size: 0.78rem;
-}
-
-.conceptFlowNode {
-  padding: 4px 10px;
-  background: #fff;
-  border: 1px solid #c7d9f5;
-  border-radius: 6px;
-  font-weight: 600;
-  color: #1a5376;
-}
-
-.conceptFlowArrow {
-  color: #1d7480;
-  font-weight: 700;
-}
-
-/* ── Step flow strip ── */
-.stepFlowRoot {
-  margin-bottom: 16px;
-  padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e8e8e4;
-  border-radius: 8px;
-}
-
-.stepFlowTitle {
-  margin: 0 0 10px;
-  font-size: 0.9rem;
-  color: #1a5376;
-}
-
-.stepFlowRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 8px;
-}
-
-.stepFlowItem {
-  position: relative;
-  text-align: center;
-  padding: 8px 6px;
-}
-
-.stepFlowCircle {
-  width: 28px;
-  height: 28px;
-  margin: 0 auto 6px;
-  border: 2px solid;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-
-.stepFlowItemTitle {
-  font-weight: 600;
-  font-size: 0.8rem;
-  margin: 0 0 4px;
-}
-
-.stepFlowItemBody {
-  font-size: 0.72rem;
-  color: #555;
-  margin: 0;
-  line-height: 1.35;
 }
 
 /* ── Slow-motion playback bar ── */
 .playbackBar {
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #1a5376 0%, #1d7480 100%);
-  color: #fff;
-  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f8fbfd;
+  color: #1a5376;
+  border-radius: 8px;
+  border: 1px solid #dbe7ed;
 }
 
 .playbackHeader {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .playbackTitle {
-  margin: 0 0 4px;
-  font-size: 1rem;
+  margin: 0 0 2px;
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .playbackSub {
-  margin: 0;
-  font-size: 0.8rem;
-  opacity: 0.9;
+  display: none;
 }
 
 .playbackControls {
@@ -908,25 +679,27 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .playbackBtn {
-  padding: 8px 16px;
-  background: #fff;
-  color: #1a5376;
-  border: none;
+  padding: 6px 12px;
+  background: #1a5376;
+  color: #fff;
+  border: 1px solid #1a5376;
   border-radius: 6px;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .playbackBtnSecondary {
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 6px 10px;
+  background: #fff;
+  color: #1a5376;
+  border: 1px solid #bfd2dd;
   border-radius: 6px;
+  font-size: 0.78rem;
   cursor: pointer;
 }
 
@@ -939,65 +712,36 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   margin-left: auto;
 }
 
 .playbackSpeedLabel input {
-  width: 100px;
+  width: 90px;
+}
+
+.playbackSeek {
+  width: 100%;
+  margin: 0 0 6px;
+  accent-color: #1a5376;
 }
 
 .playbackProgress {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.25);
+  height: 4px;
+  background: #d7e6ef;
   border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
 .playbackProgressFill {
   height: 100%;
-  background: #7FDBCA;
+  background: #1d7480;
   transition: width 0.15s ease;
 }
 
 .playbackStepLabel {
-  font-size: 0.78rem;
-  margin: 0 0 10px;
-  opacity: 0.9;
-}
-
-.playbackStepCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 8px;
-}
-
-.playbackStepCard {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  font-size: 0.78rem;
-}
-
-.playbackStepCard p {
-  margin: 4px 0 0;
-  opacity: 0.95;
-}
-
-.playbackStepNum {
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  background: #fff;
-  color: #1a5376;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
+  margin: 0;
+  color: #3a5564;
 }

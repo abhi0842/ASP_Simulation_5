@@ -59,7 +59,7 @@ const TABS = [
 
 export function KalmanLearningPanel() {
   const [activeTab, setActiveTab] = useState("initialConditions");
-  const { generateECG, noiselessMode, unforcedMode } = useContext(SimulationContext);
+  const { generateECG } = useContext(SimulationContext);
   const { aligned, dt } = useKalmanSignals();
 
   const panelProps = useMemo(
@@ -74,26 +74,8 @@ export function KalmanLearningPanel() {
 
   if (!generateECG) return null;
 
-  const activeTabObj = TABS.find((t) => t.id === activeTab);
-
   return (
     <section className={styles.kalmanTabsRoot} aria-label="Kalman learning modules">
-
-      {/* ── Topic context banner ── */}
-      <div className={styles.topicBanner}>
-        <div className={styles.topicBannerLeft}>
-          <strong>Topic 2B</strong> — Unforced Dynamic Model &amp; Noiseless State-Space
-        </div>
-        <div className={styles.topicBannerBadges}>
-          <span className={unforcedMode ? styles.topicBadgeOn : styles.topicBadgeOff}>
-            {unforcedMode ? "✓ Unforced" : "✗ Unforced off"}
-          </span>
-          <span className={noiselessMode ? styles.topicBadgeOn : styles.topicBadgeOff}>
-            {noiselessMode ? "✓ Noiseless (Q=0)" : "✗ Noiseless off"}
-          </span>
-        </div>
-      </div>
-
       {/* ── Tab navigation ── */}
       <nav className={styles.tabBar} role="tablist">
         {TABS.map((tab) => (
@@ -111,14 +93,6 @@ export function KalmanLearningPanel() {
           </button>
         ))}
       </nav>
-
-      {/* ── Tab hint bar ── */}
-      {activeTabObj && (
-        <div className={styles.tabHintBar}>
-          <span className={styles.tabHintIcon}>💡</span>
-          {activeTabObj.hint}
-        </div>
-      )}
 
       {/* ── Panel content ── */}
       <div className={styles.tabContent} role="tabpanel">

@@ -6,7 +6,6 @@ import {
   computeRMSE,
 } from "../../../utils/kalman";
 import { ChartCanvas } from "../ChartCanvas";
-import { KDerivationPanel } from "../KDerivationPanel";
 import { createRiskWindowPlugin } from "../riskWindowPlugin";
 import { COLORS } from "../kalmanColors";
 import styles from "../kalman.module.css";
@@ -29,8 +28,8 @@ export function InitialConditionsPanel({
     unforcedMode,
     playbackIndex,
   } = useContext(SimulationContext);
-  const { P0_alpha, R } = kalmanParams;
-  const showRiskWindow = P0_alpha < 1;
+  const { R } = kalmanParams;
+  const showRiskWindow = kalmanParams.P0_alpha < 1;
 
   // Effective Q and R for unforced + noiseless model
   const effectiveQ = noiselessMode ? 0 : kalmanParams.Q_diag;
@@ -281,7 +280,7 @@ export function InitialConditionsPanel({
 
   return (
     <div className={styles.panelRoot}>
-      <h3 className={styles.panelTitle}>Initial Conditions → Prediction Performance ★</h3>
+      <h3 className={styles.panelTitle}>Initial Conditions</h3>
 
       {/* Model mode banner */}
       <div className={styles.modeBanner}>
@@ -291,15 +290,8 @@ export function InitialConditionsPanel({
         <span className={noiselessMode ? styles.modeOn : styles.modeOff}>
           {noiselessMode ? "✓ Noiseless (Q=0)" : "✗ Noiseless off"}
         </span>
-        {noiselessMode && (
-          <span className={styles.modeHint}>
-            Q=0: the model is deterministic; prediction accuracy depends
-            strongly on x̂₀ and P₀ (via the gain).
-          </span>
-        )}
+        {noiselessMode && <span className={styles.modeHint}>Q=0</span>}
       </div>
-
-      <KDerivationPanel P0_alpha={P0_alpha} R={effectiveR} />
 
       {!applyNoiseTrigger && (
         <p className={styles.hintText}>
