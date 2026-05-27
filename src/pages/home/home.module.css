@@ -75,6 +75,17 @@
     }
 }
 
+.inputPanelContainer {
+    flex: 0 0 34%;
+    max-width: 34%;
+    min-width: 280px;
+}
+
+.outputPanelContainer {
+    flex: 1 1 66%;
+    min-width: 0;
+}
+
 @media (max-width: 768px) {
     .parentContainer {
         width: 100%;
@@ -85,6 +96,12 @@
         max-height: 500px;
     }
     .middleContainer {
-        flex-direction: column-reverse;
+        flex-direction: column;
+    }
+    .inputPanelContainer,
+    .outputPanelContainer {
+        flex: 1 1 auto;
+        max-width: 100%;
+        width: 100%;
     }
 }

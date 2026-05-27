@@ -21,8 +21,9 @@ export const Instruction = () => {
             <b>Noiseless State-Space</b> using ECG signals.
           </p>
           <p>
-            Follow the numbered steps on the right panel. Each step connects to
-            a tab in the learning panel below the ECG charts.
+            Follow the numbered steps on the <b>input panel (left)</b>. Each step
+            connects to a tab in the <b>output panel (right)</b> — graphs, slow-motion
+            playback, and learning tabs.
           </p>
         </div>
 
@@ -31,8 +32,8 @@ export const Instruction = () => {
           <p className={styles.stepLabel}>Step 1 — Load ECG Signal</p>
           <p>
             Select an ECG dataset and click <b>Generate ECG Signal</b>. The raw
-            ECG appears in the left panel. This is the ground truth the Kalman
-            filter must track.
+            ECG appears in the <b>output panel (right)</b>. This is the ground truth
+            the Kalman filter must track.
           </p>
         </div>
 
@@ -68,12 +69,24 @@ export const Instruction = () => {
           </p>
         </div>
 
+        {/* ── Why initial conditions ── */}
+        <div className={styles.card}>
+          <p className={styles.stepLabel}>Are initial conditions required?</p>
+          <p>
+            <b>Yes.</b> Every Kalman filter must start from an initial state estimate{" "}
+            <b>x̂₀</b> and covariance <b>P₀</b>. Before the first measurement, there is
+            no other information — so prediction quality at t = 0 depends entirely on
+            these values. In this topic (Q = 0, unforced model), that effect is
+            especially visible in the first samples.
+          </p>
+        </div>
+
         {/* ── Step 3 ── */}
         <div className={styles.card}>
           <p className={styles.stepLabel}>Step 3 — Set Initial Conditions (key experiment)</p>
           <p>
-            Slide <b>x̂₀</b> to change your initial amplitude guess. A colored
-            dot shows how close you are to the true ECG value.
+            On the <b>input panel (left)</b>, slide <b>x̂₀</b> to change your initial
+            amplitude guess. A colored dot shows how close you are to the true ECG value.
           </p>
           <p>
             Slide <b>P₀</b> to set how confident you are:
@@ -89,6 +102,10 @@ export const Instruction = () => {
           <p>
             Open the <b>Step 3b — Convergence Race</b> tab to animate how
             three different P₀ values race toward steady state.
+          </p>
+          <p>
+            Use <b>Slow-Motion Filter Walkthrough</b> at the top of the output panel
+            to step through predict → measure → update one sample at a time.
           </p>
         </div>
 

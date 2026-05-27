@@ -9,9 +9,9 @@ import { ComparisonPanel } from "./panels/ComparisonPanel";
 import styles from "./kalman.module.css";
 
 /**
- * Learning tabs — each maps to a numbered step in the right panel.
+ * Learning tabs — each maps to a numbered step in the input panel (left).
  *
- *  Right panel step  →  Tab
+ *  Input panel step  →  Tab
  *  ─────────────────────────────────────────────────────────────
  *  Step 2 (model)    →  State Space   (see what x̂⁻ = Ax̂ does)
  *  Step 3 (x̂₀, P₀) →  Initial Conditions ★  (core experiment)
@@ -32,7 +32,7 @@ const TABS = [
     label: "Step 3 — Initial Conditions ★",
     shortLabel: "Initial Conds ★",
     step: "3",
-    hint: "Change x̂₀ and P₀ in the right panel → watch RMSE and the filtered signal respond instantly.",
+    hint: "Change x̂₀ and P₀ in the input panel (left) → watch RMSE and the filtered signal update here.",
   },
   {
     id: "convergenceRace",
@@ -46,7 +46,7 @@ const TABS = [
     label: "Step 5 — Scenario Comparison",
     shortLabel: "Scenarios",
     step: "5",
-    hint: "Load one of the 4 scenarios from the right panel → compare performance side-by-side here.",
+    hint: "Load one of the 4 scenarios from the input panel → compare performance side-by-side here.",
   },
   {
     id: "gainInspector",

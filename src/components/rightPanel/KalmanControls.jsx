@@ -346,7 +346,7 @@ export function KalmanControls() {
         <StepHeader
           number="5"
           title="Try Pre-set Scenarios"
-          subtitle="Load a scenario to instantly see how different initial conditions affect the filtered signal in the charts below."
+          subtitle="Load a scenario to see how different initial conditions affect the filtered signal in the output panel (right)."
         />
 
         <div className={styles.scenarioGrid}>
@@ -398,7 +398,7 @@ export function KalmanControls() {
 
         <p className={styles.stepInsight}>
           After loading a scenario, check the <strong>Initial Conditions ★</strong> tab
-          (below) for RMSE and covariance charts.
+          on the right for RMSE and covariance charts.
         </p>
       </div>
     </div>

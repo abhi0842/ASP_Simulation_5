@@ -713,3 +713,291 @@
   font-style: italic;
   font-size: 0.79rem;
 }
+
+/* ── Topic concept diagram (output panel) ── */
+.conceptRoot {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: linear-gradient(180deg, #f8fbfd 0%, #fff 100%);
+  border: 1px solid #d4e4ec;
+  border-radius: 10px;
+}
+
+.conceptMainTitle {
+  font-size: 1.05rem;
+  color: #1a5376;
+  margin: 0 0 8px;
+}
+
+.conceptLead {
+  font-size: 0.88rem;
+  color: #444;
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+
+.conceptGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.conceptCard {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e0e8ec;
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+
+.conceptCard h3 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #1d7480;
+}
+
+.conceptCardHighlight {
+  border-color: #7F77DD;
+  background: #faf9ff;
+}
+
+.conceptEquation {
+  font-family: "Cambria Math", Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a5376;
+  margin-bottom: 8px;
+}
+
+.conceptList {
+  margin: 8px 0;
+  padding-left: 18px;
+}
+
+.conceptYes {
+  margin: 8px 0 0;
+  color: #1d6e4f;
+  font-size: 0.8rem;
+}
+
+.conceptBadgeOn,
+.conceptBadgeOff {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.conceptBadgeOn {
+  background: #d4f0e4;
+  color: #1d6e4f;
+}
+
+.conceptBadgeOff {
+  background: #eee;
+  color: #888;
+}
+
+.conceptFlow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  background: #eef6f8;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.conceptFlowNode {
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid #c7d9f5;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #1a5376;
+}
+
+.conceptFlowArrow {
+  color: #1d7480;
+  font-weight: 700;
+}
+
+/* ── Step flow strip ── */
+.stepFlowRoot {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #e8e8e4;
+  border-radius: 8px;
+}
+
+.stepFlowTitle {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: #1a5376;
+}
+
+.stepFlowRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.stepFlowItem {
+  position: relative;
+  text-align: center;
+  padding: 8px 6px;
+}
+
+.stepFlowCircle {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 6px;
+  border: 2px solid;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.stepFlowItemTitle {
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin: 0 0 4px;
+}
+
+.stepFlowItemBody {
+  font-size: 0.72rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* ── Slow-motion playback bar ── */
+.playbackBar {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #1a5376 0%, #1d7480 100%);
+  color: #fff;
+  border-radius: 10px;
+}
+
+.playbackHeader {
+  margin-bottom: 10px;
+}
+
+.playbackTitle {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.playbackSub {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.playbackControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.playbackBtn {
+  padding: 8px 16px;
+  background: #fff;
+  color: #1a5376;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.playbackBtnSecondary {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.playbackBtnSecondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.playbackSpeedLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.playbackSpeedLabel input {
+  width: 100px;
+}
+
+.playbackProgress {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.playbackProgressFill {
+  height: 100%;
+  background: #7FDBCA;
+  transition: width 0.15s ease;
+}
+
+.playbackStepLabel {
+  font-size: 0.78rem;
+  margin: 0 0 10px;
+  opacity: 0.9;
+}
+
+.playbackStepCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.playbackStepCard {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.playbackStepCard p {
+  margin: 4px 0 0;
+  opacity: 0.95;
+}
+
+.playbackStepNum {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  color: #1a5376;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+}

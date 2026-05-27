@@ -133,6 +133,11 @@ export const SimulationProvider = ({ children }) => {
   });
   const [lastKalmanSlider, setLastKalmanSlider] = useState("R");
 
+  // Step-by-step playback on the output panel (slow-motion Kalman walkthrough)
+  const [playbackIndex, setPlaybackIndex] = useState(0);
+  const [playbackPlaying, setPlaybackPlaying] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(20);
+
   const parseCsvECG = useCallback((text) => {
     const lines = text
       .split(/\r?\n/)
@@ -208,7 +213,21 @@ export const SimulationProvider = ({ children }) => {
   useEffect(() => {
     if (!generateECG) return;
     loadECGFromCsv();
+    setPlaybackIndex(0);
+    setPlaybackPlaying(false);
   }, [generateECG, loadECGFromCsv]);
+
+  useEffect(() => {
+    setPlaybackIndex(0);
+    setPlaybackPlaying(false);
+  }, [
+    kalmanParams.x0hat,
+    kalmanParams.P0_alpha,
+    kalmanParams.R,
+    kalmanParams.Q_diag,
+    csvFilePath,
+    time,
+  ]);
 
   useEffect(() => {
     setKalmanParams((p) => ({ ...p, fsKalman: originalFs }));
@@ -354,6 +373,12 @@ export const SimulationProvider = ({ children }) => {
         setKalmanParams,
         lastKalmanSlider,
         setLastKalmanSlider,
+        playbackIndex,
+        setPlaybackIndex,
+        playbackPlaying,
+        setPlaybackPlaying,
+        playbackSpeed,
+        setPlaybackSpeed,
       }}
     >
       {children}

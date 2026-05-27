@@ -69,7 +69,11 @@ export const RightPanel = () => {
   return (
     <div className={styles.rightPanelContainer}>
       <div className={styles.right}>
-        <h2 className={styles.rightPanelTitle}>Simulation Controls</h2>
+        <h2 className={styles.rightPanelTitle}>Input Panel — Simulation Controls</h2>
+        <p className={styles.inputPanelIntro}>
+          Topic: Kalman filter with an <strong>unforced</strong> dynamic model and{" "}
+          <strong>noiseless</strong> state-space (Q = 0). Set x̂₀ and P₀ here; graphs update on the right.
+        </p>
 
         {/* ── STEP 1: Load the ECG signal ── */}
         <div className={styles.box}>
@@ -115,7 +119,7 @@ export const RightPanel = () => {
 
           {generateECG && (
             <p className={styles.stepInsight}>
-              ECG loaded. Proceed to Step 2 — the Kalman controls below.
+              ECG loaded. Proceed to Step 2 — Kalman controls below. Watch the output panel on the right.
             </p>
           )}
         </div>

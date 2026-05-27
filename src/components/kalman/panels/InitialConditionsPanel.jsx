@@ -22,8 +22,13 @@ export function InitialConditionsPanel({
   times = [],
   dt = 0.002,
 }) {
-  const { applyNoiseTrigger, kalmanParams, noiselessMode, unforcedMode } =
-    useContext(SimulationContext);
+  const {
+    applyNoiseTrigger,
+    kalmanParams,
+    noiselessMode,
+    unforcedMode,
+    playbackIndex,
+  } = useContext(SimulationContext);
   const { P0_alpha, R } = kalmanParams;
   const showRiskWindow = P0_alpha < 1;
 
@@ -109,20 +114,28 @@ export function InitialConditionsPanel({
     applyNoiseTrigger,
     showRiskWindow,
     noiselessMode,
+    playbackIndex,
   ];
 
   const buildSignalChart = () => {
     if (!filterResult || !times.length) return null;
-    const n = times.length;
+    const fullN = times.length;
+    const endIdx = Math.min(playbackIndex + 1, fullN);
+    const n = endIdx;
+    const sliceTimes = times.slice(0, n);
+    const sliceClean = cleanSignal.slice(0, n);
+    const sliceNoisy = noisySignal.slice(0, n);
+    const sliceFiltered = filterResult.xFiltered.slice(0, n);
+    const slicePred = filterResult.xPred_trace?.slice(0, n) ?? [];
     return {
       type: "line",
       data: {
         datasets: [
           {
             label: "True clean ECG",
-            data: Array.from({ length: n }, (_, i) => ({
-              x: times[i],
-              y: cleanSignal[i],
+            data: sliceTimes.map((x, i) => ({
+              x,
+              y: sliceClean[i],
             })),
             borderColor: COLORS.gray,
             borderDash: [6, 4],
@@ -132,7 +145,7 @@ export function InitialConditionsPanel({
           },
           {
             label: applyNoiseTrigger ? "Noisy measurements" : "Measurements",
-            data: times.map((x, i) => ({ x, y: noisySignal[i] })),
+            data: sliceTimes.map((x, i) => ({ x, y: sliceNoisy[i] })),
             borderColor: COLORS.coral,
             backgroundColor: COLORS.coral,
             showLine: false,
@@ -140,9 +153,9 @@ export function InitialConditionsPanel({
           },
           {
             label: "Kalman filtered",
-            data: times.map((x, i) => ({
+            data: sliceTimes.map((x, i) => ({
               x,
-              y: filterResult.xFiltered[i],
+              y: sliceFiltered[i],
             })),
             borderColor: COLORS.teal,
             borderWidth: 2,
@@ -151,9 +164,9 @@ export function InitialConditionsPanel({
           },
           {
             label: "Prediction x̂⁻ (before update)",
-            data: times.map((x, i) => ({
+            data: sliceTimes.map((x, i) => ({
               x,
-              y: filterResult.xPred_trace?.[i],
+              y: slicePred[i],
             })),
             borderColor: COLORS.amber,
             borderDash: [6, 4],
@@ -187,12 +200,18 @@ export function InitialConditionsPanel({
     filterResult?.K_trace,
     filterResult?.P_inf,
     noiselessMode,
+    playbackIndex,
   ];
 
   const buildUncertaintyChart = () => {
     if (!filterResult) return null;
-    const steps = filterResult.P_trace.map((y, i) => ({ x: times[i] ?? i, y }));
-    const gains = filterResult.K_trace.map((y, i) => ({ x: times[i] ?? i, y }));
+    const endIdx = Math.min(playbackIndex + 1, filterResult.P_trace.length);
+    const steps = filterResult.P_trace
+      .slice(0, endIdx)
+      .map((y, i) => ({ x: times[i] ?? i, y }));
+    const gains = filterResult.K_trace
+      .slice(0, endIdx)
+      .map((y, i) => ({ x: times[i] ?? i, y }));
     const datasets = [
       {
         label: "P_k[0,0] — covariance",
@@ -255,7 +274,7 @@ export function InitialConditionsPanel({
   if (!times.length) {
     return (
       <p className={styles.emptyHint}>
-        Generate an ECG signal. Tune x̂₀, P₀, Q (disabled in topic), and R in the right panel.
+        Generate an ECG signal. Tune x̂₀, P₀, and R in the input panel (left). Use Play on the output panel for slow-motion.
       </p>
     );
   }
