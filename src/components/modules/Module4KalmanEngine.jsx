@@ -3,74 +3,28 @@
  * Interactive Kalman Filter Immersion with step-by-step execution
  */
 
-import { useContext, useState, useEffect, useCallback } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { SimulationContext } from '../../context/SimulationContext';
-import * as KalmanService from '../../services/KalmanService';
 import styles from './modules.module.css';
 
 export function Module4KalmanEngine() {
   const {
-    pipelineData,
-    rawSamples,
     noisyEcg,
-    stateSpaceMatrices,
-    initialConditions,
     noiselessMode,
     setNoiselessMode,
     kalmanFilterState,
-    setKalmanFilterState,
     filterStep,
     setFilterStep,
     isFiltering,
     setIsFiltering,
     advanceToNextModule,
-    setPipelineData,
+    unforcedMode,
   } = useContext(SimulationContext);
 
   const [autoPlay, setAutoPlay] = useState(false);
   const [speed, setSpeed] = useState(50);
-
-  // Run Kalman filter
-  const runKalmanFilter = useCallback(() => {
-    if (noisyEcg.length === 0 || !stateSpaceMatrices.A) return;
-
-    try {
-      const P0 = StateSpaceMatrixToP0(stateSpaceMatrices.A.length, initialConditions.P0_diag || 1);
-      const x0hat = [initialConditions.x0hat || 0, 0];
-
-      const results = KalmanService.kalmanFilter(
-        noisyEcg,
-        stateSpaceMatrices.A,
-        stateSpaceMatrices.H,
-        stateSpaceMatrices.Q,
-        stateSpaceMatrices.R,
-        x0hat,
-        P0,
-        {
-          noiselessMode,
-          includeTraces: true,
-        }
-      );
-
-      setKalmanFilterState(results);
-      setFilterStep(0);
-
-      // Update pipeline
-      setPipelineData(prev => ({
-        ...prev,
-        module4: {
-          kalmanResults: results,
-          noiselessMode,
-        },
-      }));
-    } catch (error) {
-      console.error('Kalman filter error:', error);
-    }
-  }, [noisyEcg, stateSpaceMatrices, initialConditions, noiselessMode, setKalmanFilterState, setPipelineData]);
-
-  useEffect(() => {
-    runKalmanFilter();
-  }, [runKalmanFilter]);
+  const [insideMode, setInsideMode] = useState(false);
+  const [studentGain, setStudentGain] = useState(0.5);
 
   // Auto-play logic
   useEffect(() => {
@@ -131,11 +85,45 @@ export function Module4KalmanEngine() {
               checked={noiselessMode}
               onChange={(e) => setNoiselessMode(e.target.checked)}
             />
-            🔇 <strong>NOISELESS MODE</strong> (Q = 0)
+            🔇 <strong>NOISELESS MODE</strong> (Q = 0, R → minimal)
           </label>
           <p className={styles.hint}>
-            Topic 2B: See how the filter behaves with ideal noiseless assumptions
+            Topic 2B: ideal estimation — compare with noisy measurements from Module 2
           </p>
+        </div>
+
+        {unforcedMode && (
+          <p className={styles.hint}>
+            Unforced dynamics active: prediction uses <code>x̂⁻ = A x̂</code> only (no B u).
+          </p>
+        )}
+
+        <div className={styles.toggleGroup}>
+          <label>
+            <input
+              type="checkbox"
+              checked={insideMode}
+              onChange={(e) => setInsideMode(e.target.checked)}
+            />
+            🧪 <strong>Inside the Filter</strong> — compare your gain estimate
+          </label>
+          {insideMode && stepData && (
+            <div className={styles.sliderGroup}>
+              <label>Your K guess: {studentGain.toFixed(3)}</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={studentGain}
+                onChange={(e) => setStudentGain(parseFloat(e.target.value))}
+              />
+              <p>
+                Actual K = {stepData.kalmanGain.toFixed(4)} · Error ={' '}
+                {Math.abs(studentGain - stepData.kalmanGain).toFixed(4)}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className={styles.controls}>
@@ -237,17 +225,6 @@ export function Module4KalmanEngine() {
       </section>
     </div>
   );
-}
-
-// Helper to convert P0_diag to matrix
-function StateSpaceMatrixToP0(n, diag) {
-  const P0 = [];
-  for (let i = 0; i < n; i++) {
-    const row = new Array(n).fill(0);
-    row[i] = diag;
-    P0.push(row);
-  }
-  return P0;
 }
 
 export default Module4KalmanEngine;

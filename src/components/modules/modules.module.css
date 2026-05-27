@@ -57,15 +57,18 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.moduleEmoji {
-  font-size: 1.5rem;
-  line-height: 1;
-  margin-bottom: 2px;
+.moduleShort {
+  font-size: 0.6rem;
+  opacity: 0.9;
+}
+
+.moduleBtn.ready:not(.active) {
+  border-color: rgba(92, 184, 92, 0.8);
 }
 
 .moduleNum {
-  font-size: 0.75rem;
-  margin-top: 2px;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .moduleTitle {
@@ -76,6 +79,12 @@
 .moduleTitle h2 {
   margin: 0;
   font-size: 1.5rem;
+}
+
+.moduleSubtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
 }
 
 /* Module Container */
@@ -749,6 +758,32 @@
 }
 
 /* Responsive */
+
+/* Dark mode (synced with TopPanel toggle) */
+.moduleSystem.dark .moduleContainer {
+  background: #253545;
+  color: #e8eef4;
+}
+
+.moduleSystem.dark .moduleSection h3,
+.moduleSystem.dark .moduleSection h4,
+.moduleSystem.dark .formGroup label {
+  color: #e8eef4;
+}
+
+.moduleSystem.dark .infoBox {
+  background: #1e3a4a;
+  color: #d0e8f0;
+}
+
+.moduleSystem.dark .educationalBox {
+  background: #3d3520;
+  color: #f0e6c8;
+}
+
+.moduleSystem.dark .infoTable td {
+  color: #ccd6e0;
+}
 
 @media (max-width: 768px) {
   .moduleContainer {

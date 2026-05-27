@@ -17,7 +17,7 @@ export function runKalmanFilter(
   P0_alpha,
   Q_diag,
   R,
-  { includeTraces = true } = {}
+  { includeTraces = true, noiselessMode = false } = {}
 ) {
   const n = measurements.length;
   if (n === 0) {
@@ -31,8 +31,14 @@ export function runKalmanFilter(
     };
   }
 
-  const q0 = Q_diag;
-  const q1 = Q_diag * 0.1;
+  // Topic 2B: unforced autonomous dynamics with noiseless state-space model.
+  // We force process noise Q=0 when noiselessMode is ON, while leaving R as the
+  // student's selected measurement-noise level.
+  const effectiveQ = noiselessMode ? 0 : Q_diag;
+  const effectiveR = R;
+
+  const q0 = effectiveQ;
+  const q1 = effectiveQ * 0.1;
   const dt2 = dt * dt;
 
   let x0 = x0hat;
@@ -48,6 +54,7 @@ export function runKalmanFilter(
   const K_trace = includeTraces ? new Array(n) : [];
   const innovations = includeTraces ? new Array(n) : [];
   const xStates = includeTraces ? new Array(n) : [];
+  const xPred_trace = includeTraces ? new Array(n) : [];
 
   for (let k = 0; k < n; k++) {
     const x0p = x0 + dt * x1;
@@ -60,7 +67,7 @@ export function runKalmanFilter(
 
     const z = measurements[k];
     const innov = z - x0p;
-    const S = p00p + R;
+    const S = p00p + effectiveR;
     const k0 = p00p / S;
     const k1 = p10p / S;
 
@@ -76,6 +83,8 @@ export function runKalmanFilter(
 
     xFiltered[k] = x0;
     if (includeTraces) {
+      // Prediction x̂⁻[k] (before measurement update) — x0p in this scalar measurement case
+      xPred_trace[k] = x0p;
       P_pred_trace[k] = p00p;
       P_trace[k] = p00;
       K_trace[k] = k0;
@@ -86,6 +95,7 @@ export function runKalmanFilter(
 
   return {
     xFiltered,
+    xPred_trace,
     P_trace,
     P_pred_trace,
     K_trace,

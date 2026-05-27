@@ -1,8 +1,92 @@
 .kalmanTabsRoot {
   width: 100%;
   margin-top: 8px;
-  padding-top: 12px;
+  padding-top: 0;
   border-top: 2px solid #e8e8e4;
+}
+
+/* ── Topic context banner ── */
+.topicBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  background: linear-gradient(90deg, #1a5376 0%, #1d7480 100%);
+  color: white;
+  font-size: 0.82rem;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0;
+}
+
+.topicBannerLeft {
+  font-size: 0.82rem;
+  letter-spacing: 0.2px;
+}
+
+.topicBannerBadges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.topicBadgeOn {
+  background: #d4f0e4;
+  color: #1d6e4f;
+  font-weight: 700;
+  font-size: 0.73rem;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.topicBadgeOff {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.65);
+  font-size: 0.73rem;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+/* ── Tab step badge (small number inside tab button) ── */
+.tabStepBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(29,116,128,0.15);
+  color: inherit;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 1px 5px;
+  margin-right: 4px;
+  letter-spacing: 0.5px;
+}
+
+.tabBtnActive .tabStepBadge {
+  background: rgba(255,255,255,0.3);
+  color: #1d9e75;
+}
+
+/* ── Tab hint bar ── */
+.tabHintBar {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f4f8ff;
+  border: 1px solid #c7d9f5;
+  border-radius: 0 0 6px 6px;
+  font-size: 0.8rem;
+  color: #1a3a5c;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.tabHintIcon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  margin-top: 1px;
 }
 
 .tabBar {
@@ -593,4 +677,39 @@
 
 .sensitivityBlock {
   margin-top: 4px;
+}
+
+/* ── Unforced / Noiseless model mode banner ── */
+.modeBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f4f8ff;
+  border: 1px solid #c7d9f5;
+  font-size: 0.82rem;
+}
+
+.modeOn {
+  background: #d4f0e4;
+  color: #1d6e4f;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.modeOff {
+  background: #f0f0ee;
+  color: #999;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.modeHint {
+  color: #1d6e4f;
+  font-style: italic;
+  font-size: 0.79rem;
 }

@@ -4,13 +4,10 @@ import {
   runKalmanFilter,
   solvePInfinity,
   computeRMSE,
-  computeTransientLength,
-  convergenceBadge,
 } from "../../../utils/kalman";
 import { ChartCanvas } from "../ChartCanvas";
 import { KDerivationPanel } from "../KDerivationPanel";
 import { createRiskWindowPlugin } from "../riskWindowPlugin";
-import { SensitivityChart } from "./SensitivityChart";
 import { COLORS } from "../kalmanColors";
 import styles from "../kalman.module.css";
 
@@ -25,9 +22,14 @@ export function InitialConditionsPanel({
   times = [],
   dt = 0.002,
 }) {
-  const { applyNoiseTrigger, kalmanParams } = useContext(SimulationContext);
+  const { applyNoiseTrigger, kalmanParams, noiselessMode, unforcedMode } =
+    useContext(SimulationContext);
   const { P0_alpha, R } = kalmanParams;
   const showRiskWindow = P0_alpha < 1;
+
+  // Effective Q and R for unforced + noiseless model
+  const effectiveQ = noiselessMode ? 0 : kalmanParams.Q_diag;
+  const effectiveR = R;
 
   const filterResult = useMemo(() => {
     if (!cleanSignal.length || !noisySignal.length) return null;
@@ -36,22 +38,54 @@ export function InitialConditionsPanel({
       dt,
       kalmanParams.x0hat,
       kalmanParams.P0_alpha,
-      kalmanParams.Q_diag,
-      kalmanParams.R
+      effectiveQ,
+      effectiveR,
+      { noiselessMode }
     );
-    const P_inf = solvePInfinity(dt, kalmanParams.Q_diag, kalmanParams.R);
+    const P_inf = solvePInfinity(dt, effectiveQ, effectiveR);
     return { ...result, P_inf };
-  }, [cleanSignal, noisySignal, dt, kalmanParams]);
+  }, [cleanSignal, noisySignal, dt, kalmanParams, noiselessMode, effectiveQ, effectiveR, R]);
 
   const metrics = useMemo(() => {
     if (!filterResult) return null;
-    const { xFiltered, P_trace, P_inf } = filterResult;
-    const transient = computeTransientLength(P_trace, P_inf);
-    const earlyRmse = computeRMSE(xFiltered, cleanSignal, 0, Math.min(50, xFiltered.length));
+    const { xFiltered, xPred_trace } = filterResult;
+
+    const earlyEnd = Math.min(50, xFiltered.length, cleanSignal.length);
     const lateStart = Math.max(0, xFiltered.length - 50);
-    const lateRmse = computeRMSE(xFiltered, cleanSignal, lateStart, xFiltered.length);
-    return { transient, earlyRmse, lateRmse, badge: convergenceBadge(transient) };
-  }, [filterResult, cleanSignal]);
+
+    const earlyPredRmse = computeRMSE(
+      xPred_trace,
+      cleanSignal,
+      0,
+      earlyEnd
+    );
+    const latePredRmse = computeRMSE(
+      xPred_trace,
+      cleanSignal,
+      lateStart,
+      xPred_trace.length
+    );
+
+    const earlyUpdateRmse = computeRMSE(
+      xFiltered,
+      cleanSignal,
+      0,
+      earlyEnd
+    );
+    const lateUpdateRmse = computeRMSE(
+      xFiltered,
+      cleanSignal,
+      lateStart,
+      xFiltered.length
+    );
+
+    return {
+      earlyPredRmse,
+      latePredRmse,
+      earlyUpdateRmse,
+      lateUpdateRmse,
+    };
+  }, [filterResult, cleanSignal, noiselessMode]);
 
   const riskPlugin = useMemo(
     () =>
@@ -59,9 +93,9 @@ export function InitialConditionsPanel({
         times,
         filterResult?.P_trace,
         filterResult?.P_inf,
-        showRiskWindow
+        showRiskWindow && !noiselessMode
       ),
-    [times, filterResult?.P_trace, filterResult?.P_inf, showRiskWindow]
+    [times, filterResult?.P_trace, filterResult?.P_inf, showRiskWindow, noiselessMode]
   );
 
   const signalChartDeps = [
@@ -69,10 +103,12 @@ export function InitialConditionsPanel({
     cleanSignal,
     noisySignal,
     filterResult?.xFiltered,
+    filterResult?.xPred_trace,
     filterResult?.P_trace,
     filterResult?.P_inf,
     applyNoiseTrigger,
     showRiskWindow,
+    noiselessMode,
   ];
 
   const buildSignalChart = () => {
@@ -95,7 +131,7 @@ export function InitialConditionsPanel({
             tension: 0.1,
           },
           {
-            label: "Noisy measurements",
+            label: applyNoiseTrigger ? "Noisy measurements" : "Measurements",
             data: times.map((x, i) => ({ x, y: noisySignal[i] })),
             borderColor: COLORS.coral,
             backgroundColor: COLORS.coral,
@@ -113,6 +149,18 @@ export function InitialConditionsPanel({
             pointRadius: 0,
             tension: 0.15,
           },
+          {
+            label: "Prediction x̂⁻ (before update)",
+            data: times.map((x, i) => ({
+              x,
+              y: filterResult.xPred_trace?.[i],
+            })),
+            borderColor: COLORS.amber,
+            borderDash: [6, 4],
+            borderWidth: 1.8,
+            pointRadius: 0,
+            tension: 0.1,
+          },
         ],
       },
       options: {
@@ -122,7 +170,7 @@ export function InitialConditionsPanel({
         plugins: {
           title: {
             display: true,
-            text: "Signal: Truth vs Noisy vs Filtered",
+            text: `Signal: Truth vs Noisy vs Filtered${noiselessMode ? " [Noiseless Q=0]" : ""}${unforcedMode ? " [Unforced x̂⁻=Ax̂]" : ""}`,
             font: { size: 14, weight: "600" },
           },
           legend: { labels: { boxWidth: 12 } },
@@ -133,43 +181,53 @@ export function InitialConditionsPanel({
     };
   };
 
-  const uncertaintyDeps = [times, filterResult?.P_trace, filterResult?.K_trace, filterResult?.P_inf];
+  const uncertaintyDeps = [
+    times,
+    filterResult?.P_trace,
+    filterResult?.K_trace,
+    filterResult?.P_inf,
+    noiselessMode,
+  ];
 
   const buildUncertaintyChart = () => {
     if (!filterResult) return null;
     const steps = filterResult.P_trace.map((y, i) => ({ x: times[i] ?? i, y }));
     const gains = filterResult.K_trace.map((y, i) => ({ x: times[i] ?? i, y }));
+    const datasets = [
+      {
+        label: "P_k[0,0] — covariance",
+        data: steps,
+        borderColor: COLORS.amber,
+        borderWidth: 2,
+        pointRadius: 0,
+        yAxisID: "y",
+      },
+      {
+        label: "K_k — Kalman gain",
+        data: gains,
+        borderColor: COLORS.purple,
+        borderWidth: 2,
+        pointRadius: 0,
+        yAxisID: "y1",
+      },
+    ];
+
+    // Only show P∞ reference when not in noiseless mode (P∞→0 in noiseless)
+    if (!noiselessMode && filterResult.P_inf > 0) {
+      datasets.push({
+        label: "P∞ (steady state)",
+        data: steps.map((p) => ({ x: p.x, y: filterResult.P_inf })),
+        borderColor: COLORS.gray,
+        borderDash: [4, 4],
+        borderWidth: 1,
+        pointRadius: 0,
+        yAxisID: "y",
+      });
+    }
+
     return {
       type: "line",
-      data: {
-        datasets: [
-          {
-            label: "P_k[0,0]",
-            data: steps,
-            borderColor: COLORS.amber,
-            borderWidth: 2,
-            pointRadius: 0,
-            yAxisID: "y",
-          },
-          {
-            label: "K_k",
-            data: gains,
-            borderColor: COLORS.purple,
-            borderWidth: 2,
-            pointRadius: 0,
-            yAxisID: "y1",
-          },
-          {
-            label: "P∞ (steady state)",
-            data: steps.map((p) => ({ x: p.x, y: filterResult.P_inf })),
-            borderColor: COLORS.gray,
-            borderDash: [4, 4],
-            borderWidth: 1,
-            pointRadius: 0,
-            yAxisID: "y",
-          },
-        ],
-      },
+      data: { datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -177,7 +235,7 @@ export function InitialConditionsPanel({
         plugins: {
           title: {
             display: true,
-            text: "Uncertainty P_k and Kalman Gain K_k",
+            text: "Covariance P_k and Kalman Gain K_k",
             font: { size: 13, weight: "600" },
           },
         },
@@ -197,21 +255,37 @@ export function InitialConditionsPanel({
   if (!times.length) {
     return (
       <p className={styles.emptyHint}>
-        Generate an ECG signal and add noise. Tune x̂₀, P₀, Q, and R in the right
-        panel.
+        Generate an ECG signal. Tune x̂₀, P₀, Q (disabled in topic), and R in the right panel.
       </p>
     );
   }
 
   return (
     <div className={styles.panelRoot}>
-      <h3 className={styles.panelTitle}>Initial Conditions Experiment ★</h3>
+      <h3 className={styles.panelTitle}>Initial Conditions → Prediction Performance ★</h3>
 
-      <KDerivationPanel P0_alpha={P0_alpha} R={R} />
+      {/* Model mode banner */}
+      <div className={styles.modeBanner}>
+        <span className={unforcedMode ? styles.modeOn : styles.modeOff}>
+          {unforcedMode ? "✓ Unforced" : "✗ Unforced off"}
+        </span>
+        <span className={noiselessMode ? styles.modeOn : styles.modeOff}>
+          {noiselessMode ? "✓ Noiseless (Q=0)" : "✗ Noiseless off"}
+        </span>
+        {noiselessMode && (
+          <span className={styles.modeHint}>
+            Q=0: the model is deterministic; prediction accuracy depends
+            strongly on x̂₀ and P₀ (via the gain).
+          </span>
+        )}
+      </div>
+
+      <KDerivationPanel P0_alpha={P0_alpha} R={effectiveR} />
 
       {!applyNoiseTrigger && (
         <p className={styles.hintText}>
-          Tip: Add noise via the right panel for realistic measurements.
+          Measurements are kept clean for Topic 2B. Change <b>R</b> to see how
+          filter trust affects prediction vs update.
         </p>
       )}
 
@@ -225,26 +299,27 @@ export function InitialConditionsPanel({
         {metrics && (
           <div className={styles.metricsRow}>
             <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>Transient Length</p>
-              <p className={styles.metricValue}>{metrics.transient} steps</p>
-            </div>
-            <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>Early RMSE</p>
-              <p className={styles.metricValue}>{metrics.earlyRmse.toFixed(4)}</p>
-            </div>
-            <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>Late RMSE</p>
-              <p className={styles.metricValue}>{metrics.lateRmse.toFixed(4)}</p>
-            </div>
-            <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>Convergence</p>
+              <p className={styles.metricLabel}>Early Prediction RMSE (x̂⁻)</p>
               <p className={styles.metricValue}>
-                <span
-                  className={styles.badge}
-                  style={{ background: metrics.badge.color }}
-                >
-                  {metrics.badge.label}
-                </span>
+                {metrics.earlyPredRmse.toFixed(4)}
+              </p>
+            </div>
+            <div className={styles.metricCard}>
+              <p className={styles.metricLabel}>Late Prediction RMSE (x̂⁻)</p>
+              <p className={styles.metricValue}>
+                {metrics.latePredRmse.toFixed(4)}
+              </p>
+            </div>
+            <div className={styles.metricCard}>
+              <p className={styles.metricLabel}>Early Updated RMSE (x̂)</p>
+              <p className={styles.metricValue}>
+                {metrics.earlyUpdateRmse.toFixed(4)}
+              </p>
+            </div>
+            <div className={styles.metricCard}>
+              <p className={styles.metricLabel}>Late Updated RMSE (x̂)</p>
+              <p className={styles.metricValue}>
+                {metrics.lateUpdateRmse.toFixed(4)}
               </p>
             </div>
           </div>
@@ -254,12 +329,6 @@ export function InitialConditionsPanel({
           buildConfig={buildUncertaintyChart}
           deps={uncertaintyDeps}
           className={styles.chartBoxSmall}
-        />
-
-        <SensitivityChart
-          cleanSignal={cleanSignal}
-          noisySignal={noisySignal}
-          dt={dt}
         />
       </div>
     </div>

@@ -12,6 +12,8 @@ export function useKalmanSignals(overrideParams = null) {
     time,
     applyNoiseTrigger,
     kalmanParams,
+    noiselessMode,
+    unforcedMode,
   } = useContext(SimulationContext);
 
   const params = overrideParams ?? kalmanParams;
@@ -39,17 +41,27 @@ export function useKalmanSignals(overrideParams = null) {
 
   const filterResult = useMemo(() => {
     if (!aligned.hasData) return null;
+
+    // Topic 2B: noiseless state-space model → force Q=0.
+    // Keep R as student's selected measurement-noise level.
+    const effectiveQ = noiselessMode ? 0 : params.Q_diag;
+    const effectiveR = params.R;
+
     const result = runKalmanFilter(
       aligned.measurements,
       dt,
       params.x0hat,
       params.P0_alpha,
-      params.Q_diag,
-      params.R
+      effectiveQ,
+      effectiveR,
+      { noiselessMode }
     );
-    const P_inf = solvePInfinity(dt, params.Q_diag, params.R);
-    return { ...result, P_inf, dt };
-  }, [aligned, dt, params]);
 
-  return { aligned, filterResult, params, dt, fs: originalFs };
+    // Steady-state reference consistent with the effective Q/R used above.
+    const P_inf = solvePInfinity(dt, effectiveQ, effectiveR);
+
+    return { ...result, P_inf, dt };
+  }, [aligned, dt, params, noiselessMode]);
+
+  return { aligned, filterResult, params, dt, fs: originalFs, noiselessMode, unforcedMode };
 }

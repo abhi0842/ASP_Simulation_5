@@ -348,3 +348,301 @@ input[type="number"]:focus {
         height: 100%;
     }
 }
+
+/* ──────────────────────────────────────────
+   Step-by-step layout additions
+────────────────────────────────────────── */
+
+.rightPanelTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgb(29 116 128);
+    margin: 0 0 4px;
+}
+
+/* Step header row (badge + title + subtitle) */
+.stepHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.stepBadge {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgb(29 116 128);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.stepBadgeOptional {
+    flex-shrink: 0;
+    width: 34px;
+    height: 28px;
+    border-radius: 12px;
+    background: #b0b0aa;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.stepTitle {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.stepSub {
+    font-size: 0.78rem;
+    color: #666;
+    margin: 3px 0 0;
+    line-height: 1.35;
+}
+
+/* Step insight/callout box */
+.stepInsight {
+    font-size: 0.8rem;
+    color: #1a5376;
+    background: #eef6fc;
+    border-left: 3px solid rgb(29 116 128);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+    margin: 4px 0 0;
+    line-height: 1.4;
+}
+
+/* Section heading inside a box */
+.sectionHeading {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: rgb(29 116 128);
+    margin: 0 0 2px;
+    display: block;
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+/* Step block: visual separator between numbered steps */
+.stepBlock {
+    border-top: 1px dashed #ddd;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Dynamic model toggles */
+.modelToggleRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.toggleLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.toggleCheck {
+    width: 16px !important;
+    height: 16px !important;
+    accent-color: rgb(29 116 128) !important;
+    flex-shrink: 0;
+}
+
+.toggleText {
+    flex: 1;
+    font-size: 0.88rem;
+}
+
+.toggleFormula {
+    font-family: "Consolas", monospace;
+    font-size: 0.8rem;
+    color: #555;
+    font-weight: 400;
+    background: #f0f0ee;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+
+.modelBadgeOn {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #d4f0e4;
+    color: #1d6e4f;
+    padding: 2px 7px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.modelBadgeOff {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #f0f0ee;
+    color: #999;
+    padding: 2px 7px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Explanation box for current model state */
+.modelExplainBox {
+    background: #f8f8f6;
+    border: 1px solid #e0e0dc;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.modelExplainText {
+    font-size: 0.8rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.modelExplainText code {
+    font-family: "Consolas", monospace;
+    background: #eee;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.78rem;
+}
+
+/* Field labels for Step 1 */
+.fieldLabel {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 0;
+}
+
+.fieldValue {
+    font-weight: 700;
+    color: rgb(29 116 128);
+    font-size: 0.82rem;
+    background: #eeece8;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.infoLine {
+    font-size: 0.82rem;
+    color: #555;
+    margin: 0;
+}
+
+/* Button variants */
+.btnPrimary {
+    margin-top: 6px !important;
+    width: 100% !important;
+    background: rgb(29 116 128) !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 16px !important;
+    border-radius: 6px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+}
+
+.btnPrimary:hover {
+    background: #268eb4 !important;
+}
+
+.btnGenerated {
+    margin-top: 6px !important;
+    width: 100% !important;
+    background: #639922 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 16px !important;
+    border-radius: 6px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+.btnSecondary {
+    margin-top: 6px !important;
+    background: #f5f5f2 !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+    padding: 8px 14px !important;
+    border-radius: 6px !important;
+    font-size: 0.84rem !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+}
+
+.btnSecondary:hover {
+    background: #e8f4f6 !important;
+    border-color: rgb(29 116 128) !important;
+}
+
+/* Scenario buttons with explicit class (replacing generic .scenarioGrid button) */
+.scenarioBtn {
+    margin-top: 0 !important;
+    width: 100% !important;
+    font-size: 0.72rem !important;
+    padding: 8px 6px !important;
+    background: #f5f5f2 !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    transition: background 0.15s !important;
+}
+
+.scenarioBtn:hover {
+    background: #e8f4f6 !important;
+    border-color: rgb(29 116 128) !important;
+}
+
+.scenarioBtnActive {
+    margin-top: 0 !important;
+    width: 100% !important;
+    font-size: 0.72rem !important;
+    padding: 8px 6px !important;
+    background: #d4f0e4 !important;
+    color: #1d6e4f !important;
+    border: 1.5px solid rgb(29 116 128) !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 600 !important;
+}
+
+.scenarioIcon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}

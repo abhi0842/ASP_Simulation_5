@@ -4,8 +4,6 @@
  * Focus on initial conditions, covariance evolution, and autonomous system behavior
  */
 
-import * as math from 'mathjs';
-
 /**
  * Perform Kalman filtering on measurements
  * 
@@ -50,8 +48,10 @@ export function kalmanFilter(
     };
   }
 
-  // In noiseless mode, set Q to zero
+  // Topic 2B: noiseless state-space model → force process noise Q = 0.
+  // Measurement noise level R is kept as provided by the student.
   let Q_eff = Q;
+  let R_eff = R;
   if (noiselessMode) {
     Q_eff = Q.map(row => row.map(() => 0));
   }
@@ -89,10 +89,10 @@ export function kalmanFilter(
     // Innovation covariance: S_k = H * P_k^- * H^T + R
     const HP = matrixMultiply(H, Ppred);
     const HPHt = matrixMultiply(HP, transpose(H));
-    const S = HPHt[0][0] + R;
+    const S = HPHt[0][0] + R_eff;
 
     // Kalman gain: K_k = P_k^- * H^T * S_k^{-1}
-    const PHt = matrixMultiply(P, transpose(H)); // P * H^T
+    const PHt = matrixMultiply(Ppred, transpose(H)); // P^- * H^T
     const K = PHt.map(row => row.map(v => v / S)); // Divide by scalar S
 
     // Updated estimate: x_k = x_k^- + K_k * (z_k - H * x_k^-)
@@ -103,7 +103,12 @@ export function kalmanFilter(
     const KH = matrixMultiply(K, H);
     const I = createIdentityMatrix(n);
     const IKH = matrixSubtract(I, KH);
-    P = matrixMultiply(IKH, Ppred);
+    // Joseph form for numerical stability:
+    // P = (I-KH)P^-(I-KH)^T + K R K^T
+    const josephLeft = matrixMultiply(matrixMultiply(IKH, Ppred), transpose(IKH));
+    const KR = K.map(row => row.map(v => v * R_eff));
+    const josephRight = matrixMultiply(KR, transpose(K));
+    P = matrixAdd(josephLeft, josephRight);
 
     // Store results
     xFiltered.push([...xhat]);

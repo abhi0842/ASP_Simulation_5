@@ -65,7 +65,7 @@ export function addMotionArtifact(signal, fs, amplitude = 0.1) {
     if (Math.random() < 0.001) {
       const duration = Math.floor(Math.random() * motionLength);
       for (let j = i; j < Math.min(i + duration, signal.length); j++) {
-        noise[j] += amplitude * (Math.random() * 2 - 1) * Math.exp(-((j - i) / duration) ** 2);
+        noise[j] += amplitude * (Math.random() * 2 - 1) * Math.exp(-(((j - i) / duration) ** 2));
       }
     }
     // Low-frequency component from motion

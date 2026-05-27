@@ -1,87 +1,139 @@
 import styles from "./instruction.module.css";
 
+/**
+ * "How to Use" panel — Topic 2B
+ *
+ * Learning objective:
+ *   Understand how the unforced state-space model (x̂⁻ = Ax̂) combined with
+ *   the noiseless assumption (Q = 0) makes the Kalman filter's prediction
+ *   accuracy depend ENTIRELY on the initial conditions x̂₀ and P₀.
+ */
 export const Instruction = () => {
   return (
     <div className={styles.box}>
       <div className={styles.container}>
-        <div className={styles.card}>
-          <h1>INSTRUCTIONS</h1>
-        </div>
 
+        {/* ── Title ── */}
         <div className={styles.card}>
+          <h1>How to Use This Simulation</h1>
           <p>
-            <span>STEP 1: </span>Select an <b>ECG Dataset</b>, set{" "}
-            <b>Duration</b>, and click <b>Generate ECG Signal</b>. The clean
-            signal that appears is your ground truth — what the Kalman filter
-            is trying to recover.
+            <b>Topic 2B:</b> Kalman Filter with an <b>Unforced Dynamic Model</b> and{" "}
+            <b>Noiseless State-Space</b> using ECG signals.
+          </p>
+          <p>
+            Follow the numbered steps on the right panel. Each step connects to
+            a tab in the learning panel below the ECG charts.
           </p>
         </div>
 
+        {/* ── Step 1 ── */}
         <div className={styles.card}>
+          <p className={styles.stepLabel}>Step 1 — Load ECG Signal</p>
           <p>
-            <span>STEP 2: </span>Select noise types (start with{" "}
-            <b>Baseline Wander</b> and <b>60 Hz Powerline</b>) and click{" "}
-            <b>Add Noise to Signal</b>. Notice <b>R</b> auto-adjusts in the
-            right panel to reflect the noise level you added.
+            Select an ECG dataset and click <b>Generate ECG Signal</b>. The raw
+            ECG appears in the left panel. This is the ground truth the Kalman
+            filter must track.
           </p>
         </div>
 
+        {/* ── Optional noise ── */}
         <div className={styles.card}>
+          <p className={styles.stepLabel}>Measurements are Kept Clean</p>
           <p>
-            <span>STEP 3: </span>In the right panel, try the scenario presets
-            in this order — <b>B first, then C, then A</b>. Watch the{" "}
-            <b>Initial Conditions</b> tab after each click and compare{" "}
-            <b>Early RMSE</b> and <b>Transient Length</b>. This order reveals
-            the core insight: wrong + uncertain (C) outperforms wrong +
-            confident (B) despite identical x̂₀. Then tune the sliders
-            (x̂₀, P₀, Q, R) manually and watch the charts update live.
+            For Topic 2B, the focus is the <b>noiseless state-space model</b>.
+            Therefore, measurement corruption (noise injection) is disabled.
+            You still control the filter’s trust level using the <b>R</b>
+            slider, and you can observe how prediction depends on <b>x̂₀</b>{' '}
+            and <b>P₀</b>.
           </p>
         </div>
 
+        {/* ── Step 2 ── */}
         <div className={styles.card}>
+          <p className={styles.stepLabel}>Step 2 — Set the Dynamic Model</p>
           <p>
-            <span>STEP 4: </span>Explore the tabs:
-            <ul>
-              <li>
-                <b>Initial Conditions</b> — signal comparison, uncertainty
-                evolution, and sensitivity chart
-              </li>
-              <li>
-                <b>Comparison</b> — all four scenarios overlaid with a metrics
-                table (green = best, red = worst)
-              </li>
-              <li>
-                <b>Convergence Race</b> — animated proof that large P₀
-                converges faster than small P₀
-              </li>
-              <li>
-                <b>Gain Inspector</b> — Kalman gain K_k at every step; click
-                any bar to see the exact K = P/(P+R) calculation for that step
-              </li>
-              <li>
-                <b>Common Mistakes</b> — four problems with Demonstrate
-                buttons; Mistake 3 has no button because it is a Q/R problem,
-                not a P₀ problem
-              </li>
-              <li>
-                <b>State Space</b> — state vector [amplitude, slope] and
-                F-matrix one-step prediction at any time point
-              </li>
-              <li>
-                <b>Arrhythmia Challenge</b> — tachycardia detection with
-                expert parameter comparisons
-              </li>
-            </ul>
+            Topic 2B is locked to <b>Unforced Mode</b>: the system evolves as{" "}
+            <code>x̂⁻ = A x̂</code> with no external control input. This models
+            ECG as autonomous cardiac dynamics.
+          </p>
+          <p>
+            Topic 2B is locked to <b>Noiseless Mode</b>: sets <b>Q = 0</b>{" "}
+            (no process noise). Accuracy is now driven by how your initial
+            guess <b>x̂₀</b> and uncertainty <b>P₀</b> shape the Kalman gain and
+            the one-step-ahead prediction <b>x̂⁻</b>.
+          </p>
+          <p>
+            Then open the <b>Step 2 — Unforced Model</b> tab to visualise the
+            F matrix and the predict step.
           </p>
         </div>
 
+        {/* ── Step 3 ── */}
         <div className={styles.card}>
+          <p className={styles.stepLabel}>Step 3 — Set Initial Conditions (key experiment)</p>
           <p>
-            <span>STEP 5 (Optional): </span>Click <b>Compute PSD</b> after
-            adding noise to view the power spectrum and see how noise types
-            occupy different frequency bands.
+            Slide <b>x̂₀</b> to change your initial amplitude guess. A colored
+            dot shows how close you are to the true ECG value.
+          </p>
+          <p>
+            Slide <b>P₀</b> to set how confident you are:
+          </p>
+          <ul>
+            <li><b>Small P₀</b> — very confident in x̂₀. If x̂₀ is wrong, the filter ignores early measurements → high early RMSE.</li>
+            <li><b>Large P₀</b> — uncertain about x̂₀. Filter trusts measurements quickly → fast self-correction.</li>
+          </ul>
+          <p>
+            Open the <b>Step 3 — Initial Conditions ★</b> tab to see RMSE,
+            covariance trace, and Kalman gain in real time.
+          </p>
+          <p>
+            Open the <b>Step 3b — Convergence Race</b> tab to animate how
+            three different P₀ values race toward steady state.
           </p>
         </div>
+
+        {/* ── Step 4 ── */}
+        <div className={styles.card}>
+          <p className={styles.stepLabel}>Step 4 — Noise Parameters (Q and R)</p>
+          <p>
+            In Noiseless Mode, Q is forced to 0 — the filter becomes purely
+            driven by autonomous dynamics. You can still tune <b>R</b> to
+            control how much the filter trusts the measurements. Open the
+            <b>Step 4 — Gain Inspector</b> tab to see how
+            the Kalman gain K_k decays from the P₀-determined starting value.
+          </p>
+        </div>
+
+        {/* ── Step 5 ── */}
+        <div className={styles.card}>
+          <p className={styles.stepLabel}>Step 5 — Compare Scenarios</p>
+          <p>
+            Use the four preset buttons to quickly load different combinations
+            of x̂₀ and P₀:
+          </p>
+          <ul>
+            <li><b>✓ Accurate + Confident</b> — best case (low early RMSE)</li>
+            <li><b>✗ Wrong + Confident</b> — worst case (filter is blind to its own error)</li>
+            <li><b>↗ Wrong + Uncertain</b> — self-correcting (large P₀ saves it)</li>
+            <li><b>∞ Diffuse Prior</b> — filter converges from scratch</li>
+          </ul>
+          <p>
+            Open the <b>Step 5 — Scenario Comparison</b> tab to see all four
+            filtered signals overlaid and their RMSE table.
+          </p>
+        </div>
+
+        {/* ── What to observe ── */}
+        <div className={styles.card}>
+          <p className={styles.stepLabel}>What to observe</p>
+          <ul>
+            <li>In <b>noiseless mode</b>, the covariance P_k collapses to 0 almost immediately — predictions become deterministic, driven only by A and x̂₀.</li>
+            <li>A wrong x̂₀ with small P₀ causes a visible error spike at the start of the filtered signal.</li>
+            <li>A wrong x̂₀ with large P₀ is automatically corrected within a few ECG samples.</li>
+            <li>Late RMSE is almost always the same regardless of x̂₀ — it is determined by Q and R, not initial conditions.</li>
+          </ul>
+        </div>
+
       </div>
     </div>
   );

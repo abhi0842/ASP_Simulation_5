@@ -17,6 +17,11 @@ export const SimulationProvider = ({ children }) => {
     module8: { metrics: {}, report: '' },
   });
 
+  // ========== Pipeline signal arrays (canonical experiment data) ==========
+  const [ecgValues, setEcgValues] = useState([]);
+  const [ecgTime, setEcgTime] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
+
   // ========== Module 1: ECG Signal Lab ==========
   const [ecgDatasets, setEcgDatasets] = useState([]);
   const [selectedEcgPreset, setSelectedEcgPreset] = useState('ecg200');
@@ -46,7 +51,8 @@ export const SimulationProvider = ({ children }) => {
     R: 0.01,
   });
   const [unforcedMode, setUnforcedMode] = useState(true);
-  const [noiselessMode, setNoiselessMode] = useState(false);
+  // Topic 2B default: Noiseless state-space model (Q=0) is enabled.
+  const [noiselessMode, setNoiselessMode] = useState(true);
   const [systemAnalysis, setSystemAnalysis] = useState({
     eigenvalues: null,
     stability: null,
@@ -208,6 +214,14 @@ export const SimulationProvider = ({ children }) => {
     setKalmanParams((p) => ({ ...p, fsKalman: originalFs }));
   }, [originalFs]);
 
+  useEffect(() => {
+    setKalmanParams((p) => ({
+      ...p,
+      x0hat: initialConditions.x0hat,
+      P0_alpha: initialConditions.P0_diag,
+    }));
+  }, [initialConditions.x0hat, initialConditions.P0_diag]);
+
   // ========== Pipeline helper functions ==========
   const advanceToNextModule = useCallback(() => {
     if (currentModule < 8) {
@@ -246,6 +260,14 @@ export const SimulationProvider = ({ children }) => {
         resetPipeline,
         pipelineData,
         setPipelineData,
+
+        // ========== Pipeline signals ==========
+        ecgValues,
+        setEcgValues,
+        ecgTime,
+        setEcgTime,
+        darkMode,
+        setDarkMode,
 
         // ========== Module 1: ECG Signal Lab ==========
         ecgDatasets,

@@ -17,7 +17,7 @@ import Module8Analytics from './Module8Analytics';
 import styles from './modules.module.css';
 
 export function ModuleContainer() {
-  const { currentModule } = useContext(SimulationContext);
+  const { currentModule, darkMode } = useContext(SimulationContext);
 
   const renderModule = () => {
     switch (currentModule) {
@@ -43,7 +43,7 @@ export function ModuleContainer() {
   };
 
   return (
-    <div className={styles.moduleSystem}>
+    <div className={`${styles.moduleSystem} ${darkMode ? styles.dark : ''}`}>
       <ModuleNavigation />
       <div className={styles.moduleContent}>
         {renderModule()}

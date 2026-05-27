@@ -35,7 +35,7 @@ export function ComparisonPanel({
   times = [],
   dt = 0.002,
 }) {
-  const { kalmanParams, cleanSignal: ctxClean, rawSamples } =
+  const { kalmanParams, cleanSignal: ctxClean, rawSamples, noiselessMode } =
     useContext(SimulationContext);
   const [visible, setVisible] = useState({ A: true, B: true, C: true, D: true });
 
@@ -48,7 +48,9 @@ export function ComparisonPanel({
   const comparisonData = useMemo(() => {
     if (!noisySignal.length || !cleanSignal.length) return null;
     const { Q_diag, R } = kalmanParams;
-    const P_inf = solvePInfinity(dt, Q_diag, R);
+    const effectiveQ = noiselessMode ? 0 : Q_diag;
+    const effectiveR = R;
+    const P_inf = solvePInfinity(dt, effectiveQ, effectiveR);
 
     const rows = SCENARIOS.map(({ key, label, color }) => {
       const preset = getScenarioPreset(key, trueFirstSample);
@@ -57,8 +59,9 @@ export function ComparisonPanel({
         dt,
         preset.x0hat,
         preset.P0_alpha,
-        Q_diag,
-        R
+        effectiveQ,
+        effectiveR,
+        { noiselessMode }
       );
       const transient = computeTransientLength(result.P_trace, P_inf);
       const earlyRmse = computeRMSE(
@@ -86,7 +89,7 @@ export function ComparisonPanel({
     });
 
     return { rows, P_inf };
-  }, [noisySignal, cleanSignal, dt, kalmanParams, trueFirstSample]);
+  }, [noisySignal, cleanSignal, dt, kalmanParams, trueFirstSample, noiselessMode]);
 
   const chartDeps = [
     times,

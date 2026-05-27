@@ -10,7 +10,8 @@ import styles from './modules.module.css';
 
 export function Module8Analytics() {
   const {
-    rawSamples,
+    ecgValues,
+    cleanSignal,
     noisyEcg,
     kalmanFilterState,
     convergenceAnalysis,
@@ -24,14 +25,15 @@ export function Module8Analytics() {
 
   // Calculate all metrics
   useEffect(() => {
-    if (rawSamples.length === 0 || noisyEcg.length === 0 || !kalmanFilterState?.xFiltered) {
+    const reference = cleanSignal.length ? cleanSignal : ecgValues;
+    if (reference.length === 0 || noisyEcg.length === 0 || !kalmanFilterState?.xFiltered) {
       return;
     }
 
     try {
       const filtered = kalmanFilterState.xFiltered.map(x => x[0]);
 
-      const perf = MetricsService.evaluateFilterPerformance(rawSamples, noisyEcg, filtered);
+      const perf = MetricsService.evaluateFilterPerformance(reference, noisyEcg, filtered);
       
       const allMetrics = {
         ...perf,
@@ -50,7 +52,7 @@ export function Module8Analytics() {
     } catch (error) {
       console.error('Metrics calculation error:', error);
     }
-  }, [rawSamples, noisyEcg, kalmanFilterState, convergenceAnalysis, setPerformanceMetrics, setScientificReport]);
+  }, [ecgValues, cleanSignal, noisyEcg, kalmanFilterState, convergenceAnalysis, setPerformanceMetrics, setScientificReport]);
 
   const exportReport = () => {
     const element = document.createElement('a');
@@ -78,7 +80,7 @@ export function Module8Analytics() {
     document.body.removeChild(element);
   };
 
-  if (rawSamples.length === 0) {
+  if (ecgValues.length === 0) {
     return (
       <div className={styles.moduleContainer}>
         <p className={styles.warning}>⚠️ Please complete all modules 1-7 first.</p>

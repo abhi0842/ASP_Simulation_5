@@ -1,0 +1,14 @@
+.chartWrap {
+  width: 100%;
+  background: var(--chart-bg, #fff);
+  border: 1px solid var(--chart-border, #e0e4ea);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+}
+
+.annotation {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+}

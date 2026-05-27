@@ -106,12 +106,45 @@ ol li {
 p {
   margin-left: 0px;
   margin-top: 0px;
-  font-size: 16px;
+  font-size: 14px;
   color: black;
 }
 span {
   color: #2b5876;
   margin-bottom: 0px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+ul {
+  margin-left: 18px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+ul li {
+  font-size: 13px;
+  color: #222;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+code {
+  font-family: "Consolas", monospace;
+  font-size: 0.85em;
+  background: #eef2f7;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #1a3a5c;
+}
+
+/* Step label — bold teal heading inside each card */
+.stepLabel {
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  color: rgb(29 116 128) !important;
+  margin: 0 0 8px !important;
+  border-left: 3px solid rgb(29 116 128);
+  padding-left: 8px;
+  line-height: 1.2 !important;
 }

@@ -4,23 +4,49 @@
   align-items: center;
   justify-content: center;
 }
+
 .panelContainer {
   position: relative;
   width: 100%;
-  
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
-.panelContainer h1 {
-  font-size: 30px;
+
+.titleBlock {
+  flex: 1;
+}
+
+.mainTitle {
+  font-size: 1.55rem;
   color: rgb(244, 243, 243);
-  margin-bottom: 10px;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.82rem;
+  color: rgba(200, 230, 255, 0.9);
+  margin: 0;
+  letter-spacing: 0.2px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.subtitle sub {
+  font-size: 0.7em;
+}
+
+.buttonContainer {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 4px;
 }
 
 .panelButton {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
   background-color: #2fb4e9;
-  
   color: white;
   border: none;
   border-radius: 5px;
@@ -33,6 +59,7 @@
   font-weight: 500;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }
 
 .panelButton:hover {
@@ -50,15 +77,15 @@
 }
 
 @media (max-width: 768px) {
-.panelContainer h1 {
-  font-size: 1.2rem;
-  
-   color: rgb(244, 243, 243);
-  margin-left: 10px;
-  text-align: left;
-}
-.panelButton{
-  font-size: 0.8rem;
+  .panelContainer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .mainTitle {
+    font-size: 1.1rem;
+  }
+  .panelButton {
+    font-size: 0.8rem;
     padding: 4px 8px;
-}
+  }
 }

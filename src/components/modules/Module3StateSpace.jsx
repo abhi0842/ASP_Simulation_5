@@ -45,6 +45,19 @@ export function Module3StateSpace() {
     }
   }, [presets, setStateSpaceMatrices]);
 
+  // Noiseless mode: set Q ≈ 0 when toggled (Topic 2B)
+  useEffect(() => {
+    if (!noiselessMode) return;
+    const n = stateSpaceMatrices.A?.length ?? 2;
+    const zeroQ = Array.from({ length: n }, () => Array(n).fill(0));
+    setStateSpaceMatrices((prev) => ({
+      ...prev,
+      Q: zeroQ,
+      R: Math.min(prev.R, 1e-5),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noiselessMode]);
+
   // Analyze system
   useEffect(() => {
     if (!stateSpaceMatrices.A || !stateSpaceMatrices.H) return;

@@ -1,0 +1,59 @@
+.lab {
+  width: 100%;
+  --module-viz-bg: #fafbfc;
+  --chart-bg: #fff;
+  --chart-border: #e0e4ea;
+  --heading-color: #1a5376;
+  --text-muted: #666;
+}
+
+.lab.dark {
+  --module-viz-bg: #1e2a36;
+  --chart-bg: #253545;
+  --chart-border: #3a4f63;
+  --heading-color: #7ec8e3;
+  --text-muted: #aab;
+  color: #e8eef4;
+}
+
+.workflowBanner {
+  background: linear-gradient(90deg, #1a5376, #0d2638);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.workflowBanner strong {
+  color: #7ec8e3;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.controlsColumn {
+  min-width: 0;
+}
+
+.vizColumn {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .vizColumn {
+    position: static;
+    max-height: none;
+  }
+}

@@ -3,61 +3,31 @@
  * Biomedical Noise Generation and Analysis
  */
 
-import { useContext, useEffect, useState, useCallback } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SimulationContext } from '../../context/SimulationContext';
 import * as NoiseService from '../../services/NoiseService';
 import styles from './modules.module.css';
 
 export function Module2NoiseLab() {
   const {
-    rawSamples,
+    ecgValues,
     originalFs,
     noiseConfig,
     setNoiseConfig,
-    setNoisyEcg,
-    setSNRMetrics,
+    snrMetrics,
     advanceToNextModule,
-    pipelineData,
-    setPipelineData,
   } = useContext(SimulationContext);
 
   const [noisePresets] = useState(NoiseService.getNoisePresets());
   const [selectedNoiseLevel, setSelectedNoiseLevel] = useState('mild');
+  const [showSpectrum, setShowSpectrum] = useState(false);
+  const [psdData, setPsdData] = useState(null);
 
-  // Apply noise configuration
-  const applyNoise = useCallback(() => {
-    if (rawSamples.length === 0) return;
-
-    try {
-      const noisySignal = NoiseService.applyMultipleNoise(rawSamples, originalFs, noiseConfig);
-      setNoisyEcg(noisySignal);
-
-      // Calculate SNR
-      const snrBefore = NoiseService.calculateSNR(rawSamples, rawSamples);
-      const snrAfter = NoiseService.calculateSNR(rawSamples, noisySignal);
-
-      setSNRMetrics({
-        before: snrBefore,
-        after: snrAfter,
-      });
-
-      // Update pipeline
-      setPipelineData(prev => ({
-        ...prev,
-        module2: {
-          noisyEcg: noisySignal,
-          noiseConfig: { ...noiseConfig },
-        },
-      }));
-    } catch (error) {
-      console.error('Error applying noise:', error);
-    }
-  }, [rawSamples, originalFs, noiseConfig, setNoisyEcg, setSNRMetrics, setPipelineData]);
-
-  // Apply noise when config changes
   useEffect(() => {
-    applyNoise();
-  }, [noiseConfig, applyNoise]);
+    if (!showSpectrum || ecgValues.length === 0) return;
+    const psd = NoiseService.computePSD(ecgValues, originalFs);
+    setPsdData(psd);
+  }, [showSpectrum, ecgValues]);
 
   // Load preset
   const loadPreset = (presetId) => {
@@ -68,7 +38,7 @@ export function Module2NoiseLab() {
     }
   };
 
-  if (rawSamples.length === 0) {
+  if (ecgValues.length === 0) {
     return (
       <div className={styles.moduleContainer}>
         <p className={styles.warning}>⚠️ Please complete Module 1 first to load ECG data.</p>
@@ -231,6 +201,22 @@ export function Module2NoiseLab() {
             <span>{noiseConfig.motion?.amplitude?.toFixed(3)}</span>
           </div>
         </div>
+
+        <div className={styles.infoBox}>
+          <h4>SNR (live pipeline)</h4>
+          <p>Before noise: <strong>{snrMetrics.before?.toFixed?.(1) ?? '—'} dB</strong></p>
+          <p>After noise: <strong>{snrMetrics.after?.toFixed?.(1) ?? '—'} dB</strong></p>
+          <p className={styles.hint}>Noise propagates automatically to Kalman filtering in Modules 4–8.</p>
+        </div>
+
+        <button type="button" className={styles.btn} onClick={() => setShowSpectrum(!showSpectrum)}>
+          {showSpectrum ? 'Hide' : 'Show'} spectral preview
+        </button>
+        {psdData && showSpectrum && (
+          <p className={styles.hint}>
+            PSD computed ({psdData.frequencies.length} bins). See frequency panel →
+          </p>
+        )}
 
         <div className={styles.educationalBox}>
           <h4>📚 Biomedical Noise Sources</h4>
