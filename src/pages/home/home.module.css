@@ -17,30 +17,51 @@
     box-shadow: 0 2px 10px #00000014;
     border-radius: 10px;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     flex-direction: column;
+    min-height: 100%;
 }
 
 .topContainer {
-    /* position: absolute; */
     background: linear-gradient(135deg, #1a5376 0%, #0d2638 100%);
     border: 1px solid #00000015;
     overflow: hidden;
-    margin-top: 0%;
     width: 100%;
     padding: 1rem 1.25rem;
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .middleContainer {
     position: relative;
-    background-color: #f5f5f5;
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
     flex-direction: row;
+    align-items: stretch;
+    flex: 1 1 auto;
     min-height: 640px;
+}
+
+.leftPanelContainer {
+    flex: 0 0 66.66%;
+    width: 66.66%;
+    max-width: 66.66%;
+    height: 100%;
+    background-color: #FCFCF9;
+    box-sizing: border-box;
+    min-height: inherit;
+    overflow: hidden;
+}
+
+.rightPanelContainer {
+    flex: 0 0 33.33%;
+    width: 33.33%;
+    max-width: 33.33%;
+    height: 100%;
+    background-color: #FCFCF9;
+    box-sizing: border-box;
+    min-height: inherit;
+    overflow: hidden;
 }
 
 .instructionContainer {
@@ -67,6 +88,7 @@
     border: 1px solid #00000015;
     padding-top: 6px;
     border-radius: 0px 0px 10px 10px;
+    flex-shrink: 0;
 }
 
 @media (max-width: 1200px) {
@@ -75,33 +97,28 @@
     }
 }
 
-.inputPanelContainer {
-    flex: 0 0 35%;
-    max-width: 35%;
-    min-width: 280px;
-}
-
-.outputPanelContainer {
-    flex: 1 1 65%;
-    min-width: 0;
-}
-
 @media (max-width: 768px) {
     .parentContainer {
         width: 100%;
     }
+
     .instructionContainer {
         right: 1px;
         width: 370px;
         max-height: 500px;
     }
+
     .middleContainer {
         flex-direction: column;
+        min-height: auto;
     }
-    .inputPanelContainer,
-    .outputPanelContainer {
+
+    .leftPanelContainer,
+    .rightPanelContainer {
         flex: 1 1 auto;
-        max-width: 100%;
         width: 100%;
+        max-width: 100%;
+        height: auto;
+        min-height: 0;
     }
 }

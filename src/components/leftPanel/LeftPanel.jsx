@@ -15,16 +15,16 @@ export const LeftPanel = () => {
   return (
     <div className={styles.leftPanelContainer}>
       <div className={styles.container}>
+        {generateECG && <EcgUnfilter />}
         {generateECG && <KalmanPlaybackBar />}
 
         <div className={styles.ecgChartsBlock}>
+          {applyNoiseTrigger && <EcgNoisy />}
           {applypsdTrigger && (
             <div className={styles.psdContainer}>
               <EcgUnfilteredPSD />
             </div>
           )}
-          {generateECG && <EcgUnfilter />}
-          {applyNoiseTrigger && <EcgNoisy />}
         </div>
         {generateECG && <KalmanLearningPanel />}
       </div>

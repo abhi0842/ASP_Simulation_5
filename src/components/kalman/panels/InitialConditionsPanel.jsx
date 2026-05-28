@@ -131,7 +131,7 @@ export function InitialConditionsPanel({
       data: {
         datasets: [
           {
-            label: "True clean ECG",
+            label: "True ECG (ground truth)",
             data: sliceTimes.map((x, i) => ({
               x,
               y: sliceClean[i],
@@ -143,7 +143,9 @@ export function InitialConditionsPanel({
             tension: 0.1,
           },
           {
-            label: applyNoiseTrigger ? "Noisy measurements" : "Measurements",
+            label: applyNoiseTrigger
+              ? "Measurement z_k (noisy)"
+              : "Measurement z_k",
             data: sliceTimes.map((x, i) => ({ x, y: sliceNoisy[i] })),
             borderColor: COLORS.coral,
             backgroundColor: COLORS.coral,
@@ -151,7 +153,7 @@ export function InitialConditionsPanel({
             pointRadius: 1.5,
           },
           {
-            label: "Kalman filtered",
+            label: "Filtered state x̂_k (posterior)",
             data: sliceTimes.map((x, i) => ({
               x,
               y: sliceFiltered[i],
@@ -162,7 +164,7 @@ export function InitialConditionsPanel({
             tension: 0.15,
           },
           {
-            label: "Prediction x̂⁻ (before update)",
+            label: "Predicted state x̂⁻_k (prior)",
             data: sliceTimes.map((x, i) => ({
               x,
               y: slicePred[i],
@@ -182,7 +184,7 @@ export function InitialConditionsPanel({
         plugins: {
           title: {
             display: true,
-            text: `Signal: Truth vs Noisy vs Filtered${noiselessMode ? " [Noiseless Q=0]" : ""}${unforcedMode ? " [Unforced x̂⁻=Ax̂]" : ""}`,
+            text: `Signal Overlay${noiselessMode ? " [Q=0]" : ""}${unforcedMode ? " [Unforced]" : ""}`,
             font: { size: 14, weight: "600" },
           },
           legend: { labels: { boxWidth: 12 } },

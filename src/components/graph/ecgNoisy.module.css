@@ -2,16 +2,16 @@
     max-height: 700px;
     width: 100%;
     background-color: #ffffff;
-    border-radius: 16px;
-    border: 1px solid #dadada;
-    box-shadow: 0px 2px 8px rgba(94, 94, 94, 0.22);
-    margin-bottom: 20px;
-    padding-right: 20px;
+    border-radius: 8px;
+    border: 1px solid #e4e4e0;
+    margin-bottom: 8px;
+    padding: 6px 10px 10px;
 }
 
 .signalContainer h3 {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
+    margin: 4px 0 8px;
 }
 
 .signalContainer span {

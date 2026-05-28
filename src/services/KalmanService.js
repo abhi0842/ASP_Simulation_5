@@ -196,7 +196,8 @@ export class InteractiveKalmanFilter {
     const S = HPHt[0][0] + this.R;
 
     // Kalman gain
-    const PHt = matrixMultiply(this.P, transpose(this.H));
+    // Use predicted covariance for gain at step k: K_k = P_k^- H^T S_k^{-1}
+    const PHt = matrixMultiply(Ppred, transpose(this.H));
     const K = PHt.map(row => row.map(v => v / S));
 
     // Update

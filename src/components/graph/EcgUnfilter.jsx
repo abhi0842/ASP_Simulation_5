@@ -55,7 +55,7 @@ export const EcgUnfilter = () => {
   const chartData = {
     datasets: [
       {
-        label: "ECG Signal",
+        label: "Measurement z_k (ECG)",
         data,
         borderColor: "#0078d4",
 
@@ -72,7 +72,7 @@ export const EcgUnfilter = () => {
     parsing: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
       },
     },
     scales: {
@@ -112,7 +112,7 @@ export const EcgUnfilter = () => {
 
   return (
     <div className={styles.signalContainer}>
-      <h3>ECG Signal (Unfiltered)</h3>
+      <h3>ECG Measurement</h3>
       <Line data={chartData} options={options} />
     </div>
   );

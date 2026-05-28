@@ -44,8 +44,13 @@ export const Home = () => {
               <Instruction />
             </div>
           )}
-          <RightPanel className={styles.inputPanelContainer} />
-          <LeftPanel className={styles.outputPanelContainer} />
+          <div className={styles.leftPanelContainer}>
+            <RightPanel />
+          </div>
+          <div className={styles.rightPanelContainer}>
+            <LeftPanel />
+          </div>
+
         </div>
         <div className={styles.footerContainer}>
           ©Copyright 2025 Virtual Labs, IIT Roorkee
