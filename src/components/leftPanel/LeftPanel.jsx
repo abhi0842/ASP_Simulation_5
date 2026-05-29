@@ -4,8 +4,8 @@ import { EcgUnfilter } from "../graph/EcgUnfilter.jsx";
 import { EcgNoisy } from "../graph/EcgNoisy.jsx";
 import { SimulationContext } from "../../context/SimulationContext.jsx";
 import { EcgUnfilteredPSD } from "../graph/EcgUnfilteredPSD.jsx";
-import { KalmanLearningPanel } from "../kalman/KalmanLearningPanel.jsx";
 import { KalmanPlaybackBar } from "../kalman/KalmanPlaybackBar.jsx";
+import { EducationalLab } from "../education/EducationalLab.jsx";
 
 /** Output panel — charts and playback only. */
 export const LeftPanel = () => {
@@ -26,7 +26,7 @@ export const LeftPanel = () => {
             </div>
           )}
         </div>
-        {generateECG && <KalmanLearningPanel />}
+        {generateECG && <EducationalLab />}
       </div>
     </div>
   );

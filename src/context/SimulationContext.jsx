@@ -53,6 +53,7 @@ export const SimulationProvider = ({ children }) => {
   const [unforcedMode, setUnforcedMode] = useState(true);
   // Topic 2B default: Noiseless state-space model (Q=0) is enabled.
   const [noiselessMode, setNoiselessMode] = useState(true);
+  const [forcedInputU, setForcedInputU] = useState(0);
   const [systemAnalysis, setSystemAnalysis] = useState({
     eigenvalues: null,
     stability: null,
@@ -311,6 +312,8 @@ export const SimulationProvider = ({ children }) => {
         setUnforcedMode,
         noiselessMode,
         setNoiselessMode,
+        forcedInputU,
+        setForcedInputU,
         systemAnalysis,
         setSystemAnalysis,
 
