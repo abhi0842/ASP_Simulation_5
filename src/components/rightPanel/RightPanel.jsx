@@ -20,6 +20,7 @@ export const RightPanel = () => {
     applyNoiseTrigger,
     noiselessMode,
     setApplypsdTrigger,
+    setActiveLearningTab,
   } = useContext(SimulationContext);
 
   const runPsd = () => {
@@ -28,7 +29,11 @@ export const RightPanel = () => {
       return;
     }
     if (!applyNoiseTrigger) {
-      Swal.fire({ icon: "info", title: "Add noise first", text: "Apply noise to the signal before computing PSD." });
+      Swal.fire({
+        icon: "info",
+        title: "Add noise first",
+        text: "Apply noise to the signal before computing PSD.",
+      });
       return;
     }
     setApplypsdTrigger(true);
@@ -58,7 +63,6 @@ export const RightPanel = () => {
     }
   }, [csvFilePath, prevPathRef, setApplyNoiseTrigger, setApplypsdTrigger]);
 
-  // Topic 2B: keep measurement noise disabled to match the "noiseless state-space" focus
   useEffect(() => {
     if (!noiselessMode) return;
     setApplyNoiseTrigger(false);
@@ -69,22 +73,21 @@ export const RightPanel = () => {
     <div className={styles.rightPanelContainer}>
       <div className={styles.right}>
         <h2 className={styles.rightPanelTitle}>Simulation Controls</h2>
+        <p className={styles.infoLine} style={{ marginBottom: 8 }}>
+          Topic: Unforced · Noiseless Q=0 · Follow steps 1→7, then open matching tabs →
+        </p>
 
-        {/* ── STEP 1: Load the ECG signal ── */}
         <div className={styles.box}>
           <div className={styles.stepHeader}>
             <span className={styles.stepBadge}>1</span>
             <div>
               <p className={styles.stepTitle}>Load ECG Signal</p>
-              <p className={styles.stepSub}>Choose a real ECG dataset and generate the signal to begin</p>
+              <p className={styles.stepSub}>Real ECG data for Kalman state estimation</p>
             </div>
           </div>
 
           <label className={styles.fieldLabel}>ECG Dataset</label>
-          <select
-            value={csvFilePath}
-            onChange={(e) => setCsvFilePath(e.target.value)}
-          >
+          <select value={csvFilePath} onChange={(e) => setCsvFilePath(e.target.value)}>
             <option value={assetPath("ecg200.csv")}>ECG Dataset 1</option>
             <option value={assetPath("ecg300.csv")}>ECG Dataset 2</option>
             <option value={assetPath("ecg100.csv")}>ECG Dataset 3</option>
@@ -107,85 +110,83 @@ export const RightPanel = () => {
           <button
             type="button"
             className={generateECG ? styles.btnGenerated : styles.btnPrimary}
-            onClick={() => setGenerateECG(true)}
+            onClick={() => {
+              setGenerateECG(true);
+              setActiveLearningTab("overview");
+            }}
           >
             {generateECG ? "✓ ECG Signal Loaded" : "Generate ECG Signal"}
           </button>
 
           {generateECG && (
             <p className={styles.stepInsight}>
-              ECG loaded. Proceed to Step 2 — Kalman controls below. Watch the output panel on the right.
+              ECG ready. Continue Steps 2–6 below, then explore the matching tabs in the output
+              panel (right).
             </p>
           )}
         </div>
 
-        {/* ── Optional: Add noise (not used in Topic 2B) ── */}
         {!noiselessMode && (
           <div className={styles.box}>
-          <div className={styles.stepHeader}>
-            <span className={styles.stepBadgeOptional}>opt</span>
-            <div>
-              <p className={styles.stepTitle}>Add Biomedical Noise</p>
-              <p className={styles.stepSub}>
-                Optional — corrupts the ECG to create realistic measurements.
-                Helps you see how the Kalman filter recovers the clean signal.
-              </p>
+            <div className={styles.stepHeader}>
+              <span className={styles.stepBadgeOptional}>opt</span>
+              <div>
+                <p className={styles.stepTitle}>Add Biomedical Noise</p>
+                <p className={styles.stepSub}>Optional — creates noisy measurements zₖ</p>
+              </div>
             </div>
-          </div>
 
-          <label>
-            <input
-              type="checkbox"
-              checked={noise.baseline}
-              onChange={(e) => setNoise({ ...noise, baseline: e.target.checked })}
-            />
-            {" "}Baseline Wander
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={noise.powerline}
-              onChange={(e) => setNoise({ ...noise, powerline: e.target.checked })}
-            />
-            {" "}Powerline Interference (50 Hz)
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={noise.emg}
-              onChange={(e) => setNoise({ ...noise, emg: e.target.checked })}
-            />
-            {" "}EMG Muscle Noise
-          </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={noise.baseline}
+                onChange={(e) => setNoise({ ...noise, baseline: e.target.checked })}
+              />{" "}
+              Baseline Wander
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={noise.powerline}
+                onChange={(e) => setNoise({ ...noise, powerline: e.target.checked })}
+              />{" "}
+              Powerline (50 Hz)
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={noise.emg}
+                onChange={(e) => setNoise({ ...noise, emg: e.target.checked })}
+              />{" "}
+              EMG Noise
+            </label>
 
-          <div className={styles.buttonContainer}>
-            <button
-              type="button"
-              className={applyNoiseTrigger ? styles.btnGenerated : styles.btnSecondary}
-              onClick={noiseTrigger}
-            >
-              {applyNoiseTrigger ? "✓ Noise Applied" : "Add Noise to Signal"}
-            </button>
-          </div>
+            <div className={styles.buttonContainer}>
+              <button
+                type="button"
+                className={applyNoiseTrigger ? styles.btnGenerated : styles.btnSecondary}
+                onClick={noiseTrigger}
+              >
+                {applyNoiseTrigger ? "✓ Noise Applied" : "Add Noise to Signal"}
+              </button>
+            </div>
           </div>
         )}
 
-        {/* ── STEPS 2–5: Kalman filter controls ── */}
         <KalmanControls />
 
-        {/* ── PSD (not used in Topic 2B) ── */}
         {!noiselessMode && (
           <div className={styles.box}>
-          <div className={styles.stepHeader}>
-            <span className={styles.stepBadgeOptional}>opt</span>
-            <div>
-              <p className={styles.stepTitle}>PSD Analysis</p>
-              <p className={styles.stepSub}>Power spectral density of the noisy ECG</p>
+            <div className={styles.stepHeader}>
+              <span className={styles.stepBadgeOptional}>opt</span>
+              <div>
+                <p className={styles.stepTitle}>PSD Analysis</p>
+                <p className={styles.stepSub}>Spectrum of noisy ECG</p>
+              </div>
             </div>
-          </div>
-          <button type="button" className={styles.btnSecondary} onClick={runPsd}>
-            Compute PSD
-          </button>
+            <button type="button" className={styles.btnSecondary} onClick={runPsd}>
+              Compute PSD
+            </button>
           </div>
         )}
       </div>

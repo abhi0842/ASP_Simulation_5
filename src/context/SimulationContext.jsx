@@ -54,6 +54,19 @@ export const SimulationProvider = ({ children }) => {
   // Topic 2B default: Noiseless state-space model (Q=0) is enabled.
   const [noiselessMode, setNoiselessMode] = useState(true);
   const [forcedInputU, setForcedInputU] = useState(0);
+  const [forcedInputMode, setForcedInputMode] = useState("sinusoidal");
+  const [forcedAmplitude, setForcedAmplitude] = useState(0.15);
+  const [forcedFrequency, setForcedFrequency] = useState(0.5);
+  const [labUseSynthetic, setLabUseSynthetic] = useState(false);
+  const [syntheticParams, setSyntheticParams] = useState({
+    duration: 1,
+    dt: 0.002,
+    freq: 1.2,
+    measNoise: 0.02,
+  });
+  const [observabilityMode, setObservabilityMode] = useState("observable");
+  const [activeConcept, setActiveConcept] = useState("signal");
+  const [activeLearningTab, setActiveLearningTab] = useState("overview");
   const [systemAnalysis, setSystemAnalysis] = useState({
     eigenvalues: null,
     stability: null,
@@ -314,6 +327,22 @@ export const SimulationProvider = ({ children }) => {
         setNoiselessMode,
         forcedInputU,
         setForcedInputU,
+        forcedInputMode,
+        setForcedInputMode,
+        forcedAmplitude,
+        setForcedAmplitude,
+        forcedFrequency,
+        setForcedFrequency,
+        labUseSynthetic,
+        setLabUseSynthetic,
+        syntheticParams,
+        setSyntheticParams,
+        observabilityMode,
+        setObservabilityMode,
+        activeConcept,
+        setActiveConcept,
+        activeLearningTab,
+        setActiveLearningTab,
         systemAnalysis,
         setSystemAnalysis,
 

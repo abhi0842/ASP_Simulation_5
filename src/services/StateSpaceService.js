@@ -344,3 +344,34 @@ export function getSystemDescription(A, H, Q, R) {
 
   return description;
 }
+
+/**
+ * Simulate forced system dynamics for comparison
+ * Compare x_{k+1} = A x_k + w_k (unforced) vs x_{k+1} = A x_k + B u_k + w_k (forced)
+ * Topic 2B pedagogical tool: understand effect of control input
+ */
+export function simulateForcedDynamics(A, B, x0, controlInput, steps = 10) {
+  const unforcedTrajectory = [x0];
+  const forcedTrajectory = [x0];
+  
+  let xUnforced = [...x0];
+  let xForced = [...x0];
+
+  for (let k = 0; k < steps; k++) {
+    // Unforced: x_{k+1} = A x_k
+    xUnforced = matrixVectorMultiply(A, xUnforced);
+    unforcedTrajectory.push([...xUnforced]);
+
+    // Forced: x_{k+1} = A x_k + B u_k
+    const AxForced = matrixVectorMultiply(A, xForced);
+    const BuKControl = matrixVectorMultiply(B, [controlInput]);
+    xForced = AxForced.map((val, i) => val + BuKControl[i]);
+    forcedTrajectory.push([...xForced]);
+  }
+
+  return {
+    unforced: unforcedTrajectory,
+    forced: forcedTrajectory,
+    difference: forcedTrajectory.map((f, i) => f.map((val, j) => val - unforcedTrajectory[i][j])),
+  };
+}

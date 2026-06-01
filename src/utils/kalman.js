@@ -17,7 +17,13 @@ export function runKalmanFilter(
   P0_alpha,
   Q_diag,
   R,
-  { includeTraces = true, noiselessMode = false } = {}
+  {
+    includeTraces = true,
+    noiselessMode = false,
+    forcedMode = false,
+    forcedU = 0,
+    forcedUSeries = null,
+  } = {}
 ) {
   const n = measurements.length;
   if (n === 0) {
@@ -57,7 +63,9 @@ export function runKalmanFilter(
   const xPred_trace = includeTraces ? new Array(n) : [];
 
   for (let k = 0; k < n; k++) {
-    const x0p = x0 + dt * x1;
+    const uk = forcedUSeries ? forcedUSeries[k] : forcedU;
+    const bu0 = forcedMode ? uk : 0;
+    const x0p = x0 + dt * x1 + bu0;
     const x1p = x1;
 
     const p00p = p00 + dt * (p10 + p01) + dt2 * p11 + q0;
@@ -101,6 +109,117 @@ export function runKalmanFilter(
     K_trace,
     innovations,
     xStates,
+  };
+}
+
+/**
+ * Full 2-state Kalman filter with configurable H (1×2 measurement).
+ * Returns trace(P), det(P), and full P entries for Riccati / observability labs.
+ */
+export function runKalmanFilter2State(
+  measurements,
+  dt,
+  x0hat,
+  P0_alpha,
+  Q_diag,
+  R,
+  {
+    H = [[1, 0]],
+    includeTraces = true,
+    noiselessMode = false,
+    forcedMode = false,
+    forcedU = 0,
+    forcedUSeries = null,
+  } = {}
+) {
+  const n = measurements.length;
+  const empty = {
+    xFiltered: [],
+    P_trace: [],
+    P_pred_trace: [],
+    K_trace: [],
+    innovations: [],
+    xStates: [],
+    xPred_trace: [],
+    P_det_trace: [],
+    P_matrix_trace: [],
+  };
+  if (n === 0) return empty;
+
+  const h0 = H[0]?.[0] ?? 1;
+  const h1 = H[0]?.[1] ?? 0;
+  const effectiveQ = noiselessMode ? 0 : Q_diag;
+  const q0 = effectiveQ;
+  const q1 = effectiveQ * 0.1;
+  const dt2 = dt * dt;
+
+  let x0 = x0hat;
+  let x1 = 0;
+  let p00 = P0_alpha;
+  let p01 = 0;
+  let p10 = 0;
+  let p11 = P0_alpha;
+
+  const xFiltered = new Array(n);
+  const P_trace = includeTraces ? new Array(n) : [];
+  const P_pred_trace = includeTraces ? new Array(n) : [];
+  const P_det_trace = includeTraces ? new Array(n) : [];
+  const P_matrix_trace = includeTraces ? new Array(n) : [];
+  const K_trace = includeTraces ? new Array(n) : [];
+  const innovations = includeTraces ? new Array(n) : [];
+  const xStates = includeTraces ? new Array(n) : [];
+  const xPred_trace = includeTraces ? new Array(n) : [];
+
+  for (let k = 0; k < n; k++) {
+    const uk = forcedUSeries ? forcedUSeries[k] : forcedU;
+    const bu0 = forcedMode ? uk : 0;
+    const x0p = x0 + dt * x1 + bu0;
+    const x1p = x1;
+
+    const p00p = p00 + dt * (p10 + p01) + dt2 * p11 + q0;
+    const p01p = p01 + dt * p11;
+    const p10p = p10 + dt * p11;
+    const p11p = p11 + q1;
+
+    const zPred = h0 * x0p + h1 * x1p;
+    const innov = measurements[k] - zPred;
+    const S = h0 * h0 * p00p + 2 * h0 * h1 * p01p + h1 * h1 * p11p + R;
+    const k0 = (p00p * h0 + p01p * h1) / S;
+    const k1 = (p10p * h0 + p11p * h1) / S;
+
+    x0 = x0p + k0 * innov;
+    x1 = x1p + k1 * innov;
+
+    const sk0 = S * k0;
+    const sk1 = S * k1;
+    p00 = p00p - k0 * sk0;
+    p01 = p01p - k0 * sk1;
+    p10 = p10p - k1 * sk0;
+    p11 = p11p - k1 * sk1;
+
+    xFiltered[k] = h0 * x0 + h1 * x1;
+    if (includeTraces) {
+      xPred_trace[k] = zPred;
+      P_pred_trace[k] = S - R;
+      P_trace[k] = p00 + p11;
+      P_det_trace[k] = p00 * p11 - p01 * p10;
+      P_matrix_trace[k] = { p00, p01, p10, p11 };
+      K_trace[k] = Math.sqrt(k0 * k0 + k1 * k1);
+      innovations[k] = innov;
+      xStates[k] = [x0, x1];
+    }
+  }
+
+  return {
+    xFiltered,
+    xPred_trace,
+    P_trace,
+    P_pred_trace,
+    K_trace,
+    innovations,
+    xStates,
+    P_det_trace,
+    P_matrix_trace,
   };
 }
 

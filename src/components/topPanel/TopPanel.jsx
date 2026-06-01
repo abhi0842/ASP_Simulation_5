@@ -15,10 +15,10 @@ export const TopPanel = () => {
       <div className={styles.panelContainer}>
         <div className={styles.titleBlock}>
           <h1 className={styles.mainTitle}>
-            Kalman Filter Simulation
+            Kalman Filter — Unforced &amp; Noiseless State-Space Lab
           </h1>
           <p className={styles.subtitle}>
-            Topic 2B · ECG state estimation · compact dashboard mode
+            Unforced · Noiseless Q=0 · ECG estimation · Riccati · Observability
           </p>
         </div>
         <div className={styles.buttonContainer}>

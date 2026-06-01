@@ -10,6 +10,39 @@
     padding: 8px 10px 12px;
 }
 
+.ecgStrip {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e4e8ec;
+    padding-bottom: 8px;
+}
+
+.labSection {
+    margin-top: 4px;
+}
+
+.advancedPanel {
+    margin-top: 12px;
+    border: 1px solid #e0e8ec;
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: #fafbfc;
+}
+
+.advancedSummary {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #5a6a72;
+    cursor: pointer;
+    list-style: none;
+}
+
+.advancedSummary::-webkit-details-marker {
+    display: none;
+}
+
 .ecgChartsBlock {
     width: 100%;
     display: flex;
