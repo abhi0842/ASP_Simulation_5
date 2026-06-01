@@ -5,7 +5,7 @@ import {
   runNoiselessVsNoisyPair,
   runTripleQComparison,
   runObservabilityPair,
-  buildHMatrix,
+  buildHForObservabilityLab,
   isObservable,
   observabilityRank,
   observabilityMatrix,
@@ -20,7 +20,7 @@ export function useLabKalman() {
     unforcedMode,
     noiselessMode,
     kalmanParams,
-    observabilityMode,
+    observabilityLabMode,
   } = useContext(SimulationContext);
 
   const lab = useLabSignals();
@@ -36,8 +36,8 @@ export function useLabKalman() {
 
   const F = buildFMatrix(dt);
   const H = useMemo(
-    () => buildHMatrix(observabilityMode !== "non-observable"),
-    [observabilityMode]
+    () => buildHForObservabilityLab(observabilityLabMode === "unobservable" ? "unobservable" : "full"),
+    [observabilityLabMode]
   );
 
   const filterOptions = useMemo(
@@ -117,6 +117,6 @@ export function useLabKalman() {
     unforcedMode,
     noiselessMode,
     kalmanParams,
-    observabilityMode,
+    observabilityLabMode,
   };
 }
