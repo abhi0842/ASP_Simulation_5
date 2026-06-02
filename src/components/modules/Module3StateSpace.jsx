@@ -168,10 +168,10 @@ export function Module3StateSpace() {
           <div className={styles.comparisonBox}>
             <h4>🔬 Forced vs Unforced Experiment</h4>
             <p>
-              <strong>Unforced model:</strong> <code>x_{{k+1}} = A x_k + w_k</code>
+              <strong>Unforced model:</strong> <code>x_{'{'}k+1{'}'} = A x_k + w_k</code>
             </p>
             <p>
-              <strong>Forced model:</strong> <code>x_{{k+1}} = A x_k + B u_k + w_k</code>
+              <strong>Forced model:</strong> <code>x_{'{'}k+1{'}'} = A x_k + B u_k + w_k</code>
             </p>
             
             <div className={styles.formGroup}>
@@ -203,7 +203,7 @@ export function Module3StateSpace() {
               <p><strong>Learning insight:</strong></p>
               <p>
                 When u_k = 0, the forced model becomes unforced: 
-                <code>x_{{k+1}} = A x_k + w_k</code>
+                <code>x_{'{'}k+1{'}'} = A x_k + w_k</code>
               </p>
               <p>
                 This is exactly what your Kalman filter optimizes for when UNFORCED MODE is ON.

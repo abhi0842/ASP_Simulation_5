@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import styles from "./lab.module.css";
 
 export function ModuleShell({ title, objectives, theory, experiment, visualization, takeaways }) {

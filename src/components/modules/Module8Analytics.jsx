@@ -3,7 +3,7 @@
  * Performance Analytics & Scientific Reporting
  */
 
-import { useContext, useEffect, useState, useCallback } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SimulationContext } from '../../context/SimulationContext';
 import * as MetricsService from '../../services/MetricsService';
 import styles from './modules.module.css';

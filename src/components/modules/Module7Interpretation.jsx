@@ -3,7 +3,7 @@
  * AI-Assisted Educational Interpretation (lightweight, no external LLM)
  */
 
-import { useContext, useEffect, useState, useCallback } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SimulationContext } from '../../context/SimulationContext';
 import * as EducationalExplanationService from '../../services/EducationalExplanationService';
 import * as MetricsService from '../../services/MetricsService';

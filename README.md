@@ -1,290 +1,589 @@
-# Kalman Filter Initial Conditions and Prediction Performance
+Kalman Filter with an Unforced Dynamic Model and Noiseless State-Space Model Using ECG Signals
+Overview
 
-A theoretical treatment of how the initial conditions **x̂₀** and **P₀** govern transient behavior, bias propagation, and convergence in the discrete-time Kalman filter.
+This experiment introduces the Kalman Filter under two idealized but educationally important conditions:
 
----
+Unforced Dynamic Model – the system evolves without any external control input.
+Noiseless State-Space Model – both process noise and measurement noise are assumed negligible.
 
-## Table of Contents
+Under these assumptions, students can focus on understanding the fundamental behavior of the Kalman Filter, including state prediction, covariance propagation, stability, convergence, and multi-step forecasting without the complications introduced by noise.
 
-1. [Introduction and Motivation](
-2. [System Model and Initial Conditions]
-3. [The Role of P₀: Uncertainty Encoding]
-4. [The Role of x̂₀: Initial Bias and Its Propagation]
-5. [Steady-State Analysis: The Discrete Algebraic Riccati Equation]
-6. [Information-Theoretic Interpretation]
-7. [Summary of the Correspondence]
-8. [References]
+The Electrocardiogram (ECG) signal is used as the application domain because cardiac electrical activity can be approximated as an autonomous oscillatory process, making it well suited for studying unforced dynamic systems.
 
----
+1. State-Space Representation
 
-## 1. Introduction and Motivation
+The Kalman Filter operates on systems represented in state-space form.
 
-The Kalman filter, introduced by Rudolf E. Kalman in his landmark 1960 paper, is a recursive optimal estimator that processes noisy measurements to produce estimates of an underlying system state. While a substantial body of literature addresses the steady-state behavior and asymptotic optimality of the Kalman filter, the **transient behavior governed by initial conditions** receives comparatively less pedagogical attention despite its critical importance in practical applications.
+General State Equation
 
-In adaptive signal processing, the question of how the filter behaves before it reaches steady state is not merely academic. In biomedical signal processing (ECG filtering), speech enhancement, radar tracking, and navigation systems, the filter must perform reliably from the very first measurement. A poorly chosen initial condition can introduce bias, delay convergence, or in pathological cases cause the filter to ignore real signal events during a critical early window.
+x
+k+1
+	​
 
-The two initial conditions that govern this transient behavior are:
+=Ax
+k
+	​
 
-- **x̂₀** — the initial state estimate
-- **P₀** — the initial error covariance matrix
++Bu
+k
+	​
 
-Together these encode the filter's prior belief about the system state before any measurement is processed. This document addresses precisely how x̂₀ and P₀ determine the trajectory of the estimation error, the evolution of the Kalman gain, and the speed of convergence to steady-state performance.
++w
+k
+	​
 
-> The treatment follows the frameworks established in Haykin's *Adaptive Filter Theory* (5th ed.), Anderson and Moore's *Optimal Filtering*, and Grewal and Andrews' *Kalman Filtering: Theory and Practice*. Haykin's notation is used throughout.
 
----
+where:
 
-## 2. System Model and Initial Conditions
+Symbol	Description
+x
+k
+	​
 
-### 2.1 State-Space Formulation
+	State vector
+A	State transition matrix
+B	Control input matrix
+u
+k
+	​
 
-Consider a linear discrete-time stochastic system(System that changes randomly):
+	External control input
+w
+k
+	​
 
-**State equation:**
-```
-x_{k+1} = F_k * x_k + G_k * w_k
-```
+	Process noise
+General Measurement Equation
 
-**Measurement equation:**
-```
-z_k = H_k * x_k + v_k
-```
+y
+k
+	​
 
-| Symbol | Dimension | Description |
-|--------|-----------|-------------|
-| `x_k` | ℝⁿ | State vector at time step k |
-| `z_k` | ℝᵐ | Measurement vector |
-| `F_k` | ℝⁿˣⁿ | State transition matrix |
-| `H_k` | ℝᵐˣⁿ | Observation matrix |
-| `w_k` | ~ N(0, Q_k) | Process noise |
-| `v_k` | ~ N(0, R_k) | Measurement noise |
+=Cx
+k
+	​
 
-Noise sequences are assumed white, mutually uncorrelated, and uncorrelated with the initial state:
-```
-E[w_k * w_j^T] = Q_k * δ_kj
-E[v_k * v_j^T] = R_k * δ_kj
-E[w_k * v_j^T] = 0   ∀ k, j
-```
++v
+k
+	​
 
-### 2.2 The Initial Condition
 
-The filter is initialized with two quantities encoding prior knowledge:
+where:
 
-```
-x̂_{0|0} = E[x_0] = x̂_0
-P_{0|0} = E[(x_0 - x̂_0)(x_0 - x̂_0)^T] = P_0
-```
+Symbol	Description
+y
+k
+	​
 
-- **x̂₀** is the best prior estimate of the initial state.
-- **P₀** is the covariance matrix expressing uncertainty about that estimate.
+	Measurement vector
+C	Observation matrix
+v
+k
+	​
 
-These are statistical assertions about prior knowledge, not tuning parameters like Q and R. Their correctness has direct and quantifiable consequences for filter performance during the transient phase.
+	Measurement noise
+2. Unforced Dynamic Model
 
-### 2.3 The Recursive Equations
+In an unforced system, no external control signal acts on the system.
 
-**Prediction step:**
-```
-x̂_{k|k-1} = F_{k-1} * x̂_{k-1|k-1}
-P_{k|k-1} = F_{k-1} * P_{k-1|k-1} * F_{k-1}^T + G_{k-1} * Q_{k-1} * G_{k-1}^T
-```
+Therefore,
 
-**Update step:**
-```
-K_k = P_{k|k-1} * H_k^T * (H_k * P_{k|k-1} * H_k^T + R_k)^{-1}
-x̂_{k|k} = x̂_{k|k-1} + K_k * (z_k - H_k * x̂_{k|k-1})
-P_{k|k} = (I - K_k * H_k) * P_{k|k-1}
-```
+u
+k
+	​
 
-The quantity `ν_k = z_k - H_k * x̂_{k|k-1}` is called the **innovation** or measurement residual — the new information carried by the measurement beyond what the model predicted.
+=0
 
----
+and the state equation becomes:
 
-## 3. The Role of P₀: Uncertainty Encoding and Its Consequences
+x
+k+1
+	​
 
-### 3.1 P₀ as a Prior Covariance
+=Ax
+k
+	​
 
-In the Bayesian interpretation, P₀ defines the width of the prior Gaussian distribution over x₀:
++w
+k
+	​
 
-- **Large P₀** → diffuse prior → the filter admits it knows little about the initial state.
-- **Small P₀** → tight prior → the filter claims its initial guess is nearly correct.
 
-P₀ directly determines the first Kalman gain K₁. In the scalar case:
+If process noise is also neglected:
 
-```
-K_1 = P_0 / (P_0 + R)
-```
+x
+k+1
+	​
 
-| Condition | Gain | Behavior |
-|-----------|------|----------|
-| P₀ → 0 | K₁ → 0 | Filter ignores the first measurement entirely |
-| P₀ → ∞ | K₁ → 1 | Filter sets estimate equal to first measurement |
-| P₀ = R | K₁ = 0.5 | Filter weights prior and measurement equally |
+=Ax
+k
+	​
 
-### 3.2 The Gain Sequence and Convergence Speed
 
-For a time-invariant, observable, and controllable system, the gain sequence converges monotonically to the steady-state gain K∞ regardless of P₀. However, the **rate of convergence** depends critically on the choice of P₀.
+This is called an autonomous system because its future behavior depends entirely on:
 
-For **large P₀**: The predicted covariance P_{1|0} is large, K₁ is near 1, and the first measurement correction is aggressive. After a single measurement, posterior uncertainty approaches R — the prior uncertainty is effectively washed out.
+the initial state x
+0
+	​
 
-For **small P₀**: K₁ is near 0, the first measurement contributes little correction, and the filter behaves as if it already knows the state. It resists correction even when measurements disagree.
+the state transition matrix A
 
-### 3.3 The Suboptimality Penalty of Incorrect P₀
+There is no external input available to alter or correct the trajectory.
 
-Define the **true** initial error covariance as:
-```
-Π₀ = E[(x_0 - x̂_0)(x_0 - x̂_0)^T]
-```
+3. ECG as an Autonomous System
 
-If the filter uses P₀ ≠ Π₀, the filter is suboptimal and the actual MSE differs from the filter's internal covariance estimate.
+The heart possesses an intrinsic electrical conduction system consisting of:
 
-- **P₀ < Π₀ (overconfident):** Actual MSE exceeds predicted P_k for early steps — slow initial convergence.
-- **P₀ > Π₀ (underconfident):** Actual MSE is initially lower than P_k predicts because the filter overcorrects toward measurements — beneficial when x̂₀ is inaccurate.
+Sinoatrial (SA) node
+Atrioventricular (AV) node
+Bundle of His
+Purkinje fibers
 
-This asymmetry is the theoretical basis for the practical rule (Haykin):
+These structures generate rhythmic electrical activity without requiring an external control signal.
 
-> **"When in doubt, choose P₀ large."**
+For modeling purposes, the ECG can therefore be approximated as an autonomous dynamic system:
 
-The performance penalty for overestimating uncertainty is smaller than the penalty for underestimating it when the initial state guess is imperfect.
+u
+k
+	​
 
----
+=0
 
-## 4. The Role of x̂₀: Initial Bias and Its Propagation
+allowing heartbeat evolution to be represented by the state transition matrix A.
 
-### 4.1 Estimation Bias from Incorrect x̂₀
+This approximation makes ECG signals an excellent educational example for studying unforced dynamic systems.
 
-Define the initial state estimation error:
-```
-x̃_0 = x_0 - x̂_0
-```
+4. State Transition Matrix A
 
-If x̂₀ ≠ E[x₀], then E[x̃₀] ≠ 0 and the filter starts with a biased estimate. The bias propagates as:
+The matrix A governs how the system evolves over time.
 
-```
-E[x̃_{k|k}] = ∏_{j=1}^{k} (I - K_j * H_j) * F_{j-1} · E[x̃_0]
-```
+For an autonomous system:
 
-This product is the **bias propagation matrix** Φ_k. For an observable system with R > 0, the spectral radius of `(I - K_k * H_k) * F` is strictly less than 1, guaranteeing that initial bias **decays exponentially**. The decay rate is governed directly by the Kalman gain magnitude, which is itself determined by P₀.
+x
+k+1
+	​
 
-### 4.2 The Interaction Between x̂₀ Error and P₀
+=Ax
+k
+	​
 
-The bias decay rate depends on `‖I - K_k * H_k‖`:
 
-- **Large P₀ → large K_k early on** → factor is small → bias decays quickly.
-- **Small P₀ → small K_k early on** → factor is near 1 → bias persists for many steps.
+Repeated application produces multi-step prediction:
 
-The **worst-case transient** arises from the combination of:
-- Large `‖x̃₀‖` (wrong initial guess), **and**
-- Small P₀ (high confidence in that wrong guess)
+x
+k+n
+	​
 
-The filter insists on its incorrect prior and resists corrective measurements. Early RMSE satisfies:
-```
-RMSE(k) ≈ ‖Φ_k‖ · ‖x̃_0‖ + O(σ_w, σ_v)
-```
+=A
+n
+x
+k
+	​
 
-Conversely, with large P₀, the gain K₁ is near 1, meaning `‖I - K₁H‖` is near 0, and the bias contribution at step 1 is nearly eliminated — the filter discards the wrong prior after a single measurement.
 
----
+The quality of long-term prediction depends entirely on the properties of A.
 
-## 5. Steady-State Analysis: The Discrete Algebraic Riccati Equation
+Eigenvalue-Based Stability
 
-### 5.1 Convergence to P∞
+The eigenvalues of A determine system stability.
 
-For a time-invariant, detectable, and stabilizable system, the predicted error covariance converges to a unique positive semi-definite solution P∞ of the **Discrete Algebraic Riccati Equation (DARE)**:
+Eigenvalue Condition	System Behavior
+(	\lambda_i
+(	\lambda_i
+(	\lambda_i
 
-```
-P∞ = F*P∞*F^T - F*P∞*H^T * (H*P∞*H^T + R)^{-1} * H*P∞*F^T + Q
-```
+For ECG modeling, eigenvalues near the unit circle are desirable because they preserve periodic cardiac oscillations.
 
-The steady-state Kalman gain is:
-```
-K∞ = P∞ * H^T * (H*P∞*H^T + R)^{-1}
-```
+5. Noiseless State-Space Model
 
-**P∞ is independent of P₀.** This is the theoretical basis for the observation that all initial conditions produce the same steady-state performance — the DARE solution is determined entirely by F, H, Q, and R.
+In the idealized noiseless model:
 
-### 5.2 Transient Length as a Function of P₀
+Q≈0
+R≈0
 
-The **transient length** T_ε is the number of steps for P_{k|k} to come within ε of P∞:
-```
-T_ε = min { k : ‖P_{k|k} - P∞‖ < ε‖P∞‖ }
-```
+where:
 
-The asymptotic convergence rate is the same for all initial conditions (governed by `ρ = |1 - K∞H|`). However, the initial deviation `‖P₀ - P∞‖` scales the transient directly.
+Q = process noise covariance
+R = measurement noise covariance
 
-| Initial Condition | Behavior |
-|-------------------|----------|
-| **P₀ ≫ P∞** | Large initial gain causes rapid descent. Transient is paradoxically **short**. |
-| **P₀ ≪ P∞** | Small initial gain means slow climb toward P∞. Transient is **longer**. |
-| **P₀ = P∞** | Transient length is zero — filter is initialized at steady state. |
+The system becomes deterministic:
 
-> **Key counterintuitive result:** Large P₀ leads to a *shorter* transient than small P₀. This directly contradicts the naive assumption that "more confident initialization leads to faster settling."
+x
+k+1
+	​
 
----
+=Ax
+k
+	​
 
-## 6. Information-Theoretic Interpretation
+y
+k
+	​
 
-### 6.1 The Fisher Information Perspective
+=Cx
+k
+	​
 
-The Fisher information matrix associated with the prior is:
-```
-J_0 = P_0^{-1}
-```
 
-- **Large P₀** → low prior information → measurements dominate immediately.
-- **Small P₀** → high prior information → prior dominates, many measurements needed before posterior reflects data.
+Measurements perfectly reflect the system state, and no uncertainty is introduced by the dynamics.
 
-At each step, posterior Fisher information satisfies:
-```
-J_{k|k} = J_{k|k-1} + H_k^T * R_k^{-1} * H_k
-```
+6. Covariance Propagation
 
-The second term is the Fisher information contributed by the new measurement. P₀ is the dial that controls the balance between prior knowledge and incoming measurements in the early transient.
+The prediction covariance evolves according to:
 
-### 6.2 The Diffuse Prior as a Limiting Case
+P
+k∣k−1
+	​
 
-When no prior knowledge is available, the theoretically correct choice is the **diffuse prior**: `P₀ → ∞I`.
+=AP
+k−1∣k−1
+	​
 
-In this limit, K₁ → H⁺ (the pseudoinverse of H), and the first update step reduces to a least-squares fit to the first measurement. The first posterior estimate x̂_{1|1} is the minimum-norm solution consistent with z₁ — the correct Bayesian posterior when no prior is available.
+A
+T
++Q
 
-In practice, a finite large value `P₀ = αI` with `α ≫ ‖P∞‖` serves as a numerically stable approximation to the diffuse prior. The transient for this case is the shortest possible, at the cost of noisy initial estimates that reflect the measurement noise R directly.
+For the noiseless case:
 
----
+Q=0
 
-## 7. Summary of the Correspondence
+so:
 
-The relationship between initial conditions and prediction performance is captured by four theorems:
+P
+k∣k−1
+	​
 
-### Theorem 1 — Gain-Covariance Correspondence *(Haykin Ch. 10)*
-The first Kalman gain K₁ is a monotonically increasing function of P₀. All subsequent gains K_k for k > 1 are determined by the Riccati recursion initialized at P₀, and the **entire gain trajectory is shifted** by the choice of P₀.
+=AP
+k−1∣k−1
+	​
 
-### Theorem 2 — Bias Decay Rate *(Anderson and Moore Ch. 4)*
-The initial state estimation bias E[x̃₀] decays at a rate proportional to K₁:
-- Large P₀ → large K₁ → **rapid bias elimination** → short transient.
-- Small P₀ → small K₁ → **slow bias elimination** → long transient.
+A
+T
 
-### Theorem 3 — Steady-State Independence *(Anderson and Moore Theorem 4.1)*
-For a detectable and stabilizable system, P∞ and K∞ are unique and **independent of P₀**. Steady-state prediction performance is determined solely by F, H, Q, R.
+The covariance update equation is:
 
-### Theorem 4 — Suboptimality Asymmetry *(Grewal and Andrews Ch. 5)*
-When P₀ is incorrect, the performance penalty is **asymmetric**. Underestimating P₀ (overconfidence) when x̂₀ is wrong causes larger and longer-lasting RMSE degradation than overestimating P₀ (underconfidence) by the same magnitude.
+P
+k∣k
+	​
 
----
+=(I−K
+k
+	​
 
-### Practical Takeaway
+C)P
+k∣k−1
+	​
 
-Initial conditions govern the **transient trajectory** — its length, its bias, and its shape — but leave the **asymptotic destination unchanged**.
 
-| x̂₀ knowledge | P₀ recommendation |
-|---------------|-------------------|
-| Well known (accurate prior) | Small P₀ appropriate |
-| Unknown or uncertain | Large P₀ — both theoretically correct and practically safer |
+In an observable system with perfect measurements, repeated updates reduce estimation uncertainty and drive the covariance toward very small values.
 
----
+This phenomenon is often referred to as covariance collapse.
 
-## References
+7. Kalman Filter Algorithm
 
-1. Haykin, S. (2014). *Adaptive Filter Theory*, 5th ed. Pearson. Chapters 10–11.
-2. Anderson, B. D. O., & Moore, J. B. (1979). *Optimal Filtering*. Prentice-Hall. Chapters 4–5.
-3. Grewal, M. S., & Andrews, A. P. (2015). *Kalman Filtering: Theory and Practice*, 4th ed. Wiley-IEEE Press. Chapters 4–5.
-4. Jazwinski, A. H. (1970). *Stochastic Processes and Filtering Theory*. Academic Press. Chapter 7.
-5. Kalman, R. E. (1960). A new approach to linear filtering and prediction problems. *Journal of Basic Engineering*, 82(1), 35–45.
+The Kalman Filter operates in two phases:
+
+Prediction Step
+State Prediction
+x
+^
+k∣k−1
+	​
+
+=A
+x
+^
+k−1∣k−1
+	​
+
+Covariance Prediction
+P
+k∣k−1
+	​
+
+=AP
+k−1∣k−1
+	​
+
+A
+T
++Q
+Update Step
+Kalman Gain
+K
+k
+	​
+
+=P
+k∣k−1
+	​
+
+C
+T
+(CP
+k∣k−1
+	​
+
+C
+T
++R)
+−1
+State Update
+x
+^
+k∣k
+	​
+
+=
+x
+^
+k∣k−1
+	​
+
++K
+k
+	​
+
+(y
+k
+	​
+
+−C
+x
+^
+k∣k−1
+	​
+
+)
+Covariance Update
+P
+k∣k
+	​
+
+=(I−K
+k
+	​
+
+C)P
+k∣k−1
+	​
+
+8. Innovation (Residual)
+
+The innovation measures the discrepancy between prediction and observation.
+
+ν
+k
+	​
+
+=y
+k
+	​
+
+−C
+x
+^
+k∣k−1
+	​
+
+
+Interpretation:
+
+Innovation Value	Meaning
+Near zero	Accurate prediction
+Large magnitude	Model mismatch, initialization error, or noise
+
+In an ideal noiseless system with a correct model, innovations approach zero as the filter converges.
+
+9. Initial Conditions
+
+The behavior of an unforced system depends strongly on its initial conditions.
+
+Initial State Estimate
+x
+^
+0
+	​
+
+
+represents the best available estimate of the starting state.
+
+Errors in initialization create transient prediction errors that gradually decrease as measurements are incorporated.
+
+Initial Covariance
+P
+0
+	​
+
+
+represents uncertainty in the initial state estimate.
+
+Choice of P
+0
+	​
+
+	Effect
+Large P
+0
+	​
+
+	Fast convergence, high measurement trust
+Small P
+0
+	​
+
+	Slow convergence, high prediction trust
+Diagonal P
+0
+	​
+
+	Assumes state independence
+P
+0
+	​
+
+=I	Neutral initialization
+10. ECG State-Space Formulation
+
+A simplified ECG state vector may be represented as:
+
+x
+k
+	​
+
+=[ϕ
+k
+	​
+
+,z
+k
+	​
+
+,ω
+k
+	​
+
+]
+T
+
+where:
+
+State Variable	Meaning
+ϕ
+k
+	​
+
+	Cardiac phase
+z
+k
+	​
+
+	ECG amplitude
+ω
+k
+	​
+
+	Angular frequency
+
+A common observation matrix is:
+
+C=[010]
+
+which extracts the ECG amplitude:
+
+y
+k
+	​
+
+=z
+k
+	​
+
+11. Multi-Step Prediction
+
+Future ECG states can be predicted using:
+
+x
+^
+k+n∣k
+	​
+
+=A
+n
+x
+^
+k∣k
+	​
+
+
+The corresponding covariance prediction is:
+
+P
+k+n∣k
+	​
+
+=A
+n
+P
+k∣k
+	​
+
+(A
+n
+)
+T
+
+Prediction accuracy depends on:
+
+model quality
+initial conditions
+eigenvalues of A
+prediction horizon
+
+Longer prediction horizons generally increase sensitivity to modeling errors.
+
+12. Educational Learning Outcomes
+
+After completing this experiment, students should be able to:
+
+Understand state-space representations of dynamic systems.
+Explain the concept of an unforced (autonomous) dynamic model.
+Implement the Kalman Filter prediction and update equations.
+Analyze covariance propagation and uncertainty reduction.
+Interpret the influence of initial conditions x
+0
+	​
+
+ and P
+0
+	​
+
+.
+Study the effect of eigenvalues on system stability.
+Perform multi-step ECG prediction using state-transition matrices.
+Analyze innovation signals as indicators of estimation quality.
+Understand why the noiseless case serves as the theoretical baseline for real-world noisy Kalman Filter applications.
+Suggested Simulation Experiments
+Experiment	Learning Objective
+Vary P
+0
+	​
+
+	Observe convergence behavior
+Vary 
+x
+^
+0
+	​
+
+	\Study transient response
+Modify eigenvalues of A	Explore stability
+Multi-step prediction	Analyze forecast accuracy
+Introduce process noise Q	Observe covariance growth
+Introduce measurement noise R	Observe Kalman gain changes
+Perfect initialization	Observe ideal filter behavior
+References
+Kalman, R. E. (1960). A New Approach to Linear Filtering and Prediction Problems. ASME Journal of Basic Engineering.
+McSharry, P. E., Clifford, G. D., Tarassenko, L., & Smith, L. A. (2003). A Dynamical Model for Generating Synthetic Electrocardiogram Signals. IEEE Transactions on Biomedical Engineering.
+Welch, G., & Bishop, G. (2006). An Introduction to the Kalman Filter.
+Simon, D. (2006). Optimal State Estimation: Kalman, H-Infinity, and Nonlinear Approaches.
