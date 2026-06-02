@@ -18,7 +18,7 @@ export const TopPanel = () => {
             Kalman Filter — Unforced &amp; Noiseless State-Space Lab
           </h1>
           <p className={styles.subtitle}>
-            Unforced · Noiseless Q=0 · ECG estimation · Riccati · Observability
+            u(k)=0 · w(k)=0 · Six guided investigations on real ECG data
           </p>
         </div>
         <div className={styles.buttonContainer}>

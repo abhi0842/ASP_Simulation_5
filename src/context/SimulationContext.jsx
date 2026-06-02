@@ -65,8 +65,10 @@ export const SimulationProvider = ({ children }) => {
     measNoise: 0.02,
   });
   const [observabilityMode, setObservabilityMode] = useState("observable");
-  const [activeConcept, setActiveConcept] = useState("signal");
-  const [activeLearningTab, setActiveLearningTab] = useState("overview");
+  const [observabilityLabMode, setObservabilityLabMode] = useState("full");
+  const [activeInvestigation, setActiveInvestigation] = useState(0);
+  const [maxUnlockedInvestigation, setMaxUnlockedInvestigation] = useState(0);
+  const [labQInject, setLabQInject] = useState(0);
   const [systemAnalysis, setSystemAnalysis] = useState({
     eigenvalues: null,
     stability: null,
@@ -339,10 +341,14 @@ export const SimulationProvider = ({ children }) => {
         setSyntheticParams,
         observabilityMode,
         setObservabilityMode,
-        activeConcept,
-        setActiveConcept,
-        activeLearningTab,
-        setActiveLearningTab,
+        observabilityLabMode,
+        setObservabilityLabMode,
+        activeInvestigation,
+        setActiveInvestigation,
+        maxUnlockedInvestigation,
+        setMaxUnlockedInvestigation,
+        labQInject,
+        setLabQInject,
         systemAnalysis,
         setSystemAnalysis,
 

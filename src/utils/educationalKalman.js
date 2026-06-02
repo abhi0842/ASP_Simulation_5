@@ -11,6 +11,12 @@ export function buildHMatrix(observable = true) {
   return observable ? [[1, 0]] : [[0, 1]];
 }
 
+/** Observability lab: full / partial use H=[1,0]; unobservable uses H=[0,0]. */
+export function buildHForObservabilityLab(mode = "full") {
+  if (mode === "unobservable") return [[0, 0]];
+  return [[1, 0]];
+}
+
 export function observabilityMatrix(A, H) {
   const h0 = H[0][0];
   const h1 = H[0][1];
