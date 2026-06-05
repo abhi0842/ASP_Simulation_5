@@ -1,10 +1,10 @@
 export const INVESTIGATIONS = [
-  { id: 0, key: "unforced", title: "Unforced Dynamics", short: "1. Unforced" },
-  { id: 1, key: "forcedCmp", title: "Forced vs Unforced", short: "2. Forced" },
-  { id: 2, key: "noiseless", title: "Noiseless Model", short: "3. Noiseless" },
-  { id: 3, key: "processQ", title: "Process Noise Injection", short: "4. Q inject" },
-  { id: 4, key: "steady", title: "Steady-State Behaviour", short: "5. Steady" },
-  { id: 5, key: "obs", title: "Observability", short: "6. Obs." },
+  { id: 0, key: "extraction", title: "Initial State Extraction", short: "1. Extraction" },
+  { id: 1, key: "dynamics", title: "Unforced Dynamic Model", short: "2. Dynamics" },
+  { id: 2, key: "noiseless", title: "Noiseless State-Space", short: "3. Noiseless" },
+  { id: 3, key: "prediction", title: "State Prediction Flow", short: "4. Predict" },
+  { id: 4, key: "measurement", title: "Measurement Mapping", short: "5. Measure" },
+  { id: 5, key: "stability", title: "Stability Analysis", short: "6. Stability" },
 ];
 
 export const STEADY_THRESHOLD = 0.01;
